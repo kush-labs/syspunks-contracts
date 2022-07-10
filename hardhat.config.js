@@ -13,6 +13,7 @@ dotenv.config();
  */
 module.exports = {
   solidity: "0.8.1",
+  // solidity: "0.5.16",
   settings: {
     optimizer: {
       enabled: true,

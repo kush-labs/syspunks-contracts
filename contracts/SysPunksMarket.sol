@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-// @@@@@@@@@@@@@@@@@@@@@@@@@@  SYSPUNKS - 0G NFTS 0N THE NEVM &@@@@@@@@@@@@@@@@@@@@
+// @@@@@@@@@@@@@@@@@@@@@@@@@@ SYSPUNKS - 0G NFTS 0N THE NEVM &@@@@@@@@@@@@@@@@@@@@@
 // @@@@@@@@@@@@@@@@@@@@@@@%#*.................................*.@%@@@@@@@@@@@@@@@@@
 // @@@@@@@@@@@@@@@@&,,*** *.#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%, /****,,@@@@@@@@@@@
 // @@@@@@@@@@@@@@@*//////(/(%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%(//////(*.&&@@@@@@@@
@@ -36,6 +36,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
     // Mapping from owner to list of owned token IDs
@@ -202,15 +203,18 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         uint256 value;
     }
 
+    uint256 constant WET = 10 ** 18;
+
     mapping(uint256 => uint256) private assignOrders;
 
     mapping (uint256 => Offer) public punksOfferedForSale;
     mapping (uint256 => Bid) public punkBids;
     mapping (address => uint256) public pendingWithdrawals;
-    string public baseURI;
+    address public luxyAddress = 0x7c896AA52A795EF7559bdcA5c2e046C4CB436760;
+    string public baseURI = "https://api.syspunks.org";
     string public imageHash = "ac39af4793119ee46bbff351d8cb6b5f23da60222126add4268e261199a2921b";
     uint256 public punksRemainingToAssign = 0;
-    uint256 public claimPrice = 100 wei;
+    uint256 public constant lowestPrice = 50 ether;
 
     modifier onlyTradablePunk (address from, uint256 tokenId) {
         require(tokenId < 10000, "Out of tokenId");
@@ -237,9 +241,29 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         baseURI = uri;
     }
 
+    function setLuxyAddress(address addr) public onlyOwner {
+        luxyAddress = addr;
+    }
+
+    function checkMintPrice(address addr) public view returns (uint256) {
+        uint256 luxyHeld = IERC20(luxyAddress).balanceOf(addr);
+        if (luxyHeld >= 50000 * WET) {
+            return 50 ether;
+        } else if (luxyHeld >= 20000 * WET) {
+            return 100 ether;
+        } else if (luxyHeld >= 5000 * WET) {
+            return 200 ether;
+        } else if (luxyHeld >= 1000 * WET) {
+            return 300 ether;
+        } else {
+            return 350 ether;
+        }
+    }
+
     function mint() payable public {
-        require(punksRemainingToAssign > 0, "No remainig punk");
-        require(msg.value >= claimPrice, "Need pay at least claim amount");
+        require(punksRemainingToAssign > 0, "No punks remaining");
+        require(msg.value >= lowestPrice, "Need pay more than lowest amount");
+        require(msg.value >= checkMintPrice(msg.sender), "Need to pay more than mint price");
         uint256 randIndex = _random() % punksRemainingToAssign;
         uint256 punkIndex = _fillAssignOrder(--punksRemainingToAssign, randIndex);
         _safeMint(_msgSender(), punkIndex);

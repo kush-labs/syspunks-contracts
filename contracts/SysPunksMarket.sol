@@ -1,40 +1,43 @@
 // SPDX-License-Identifier: MIT
 
-// @@@@@@@@@@@@@@@@@@@@@@@@@@ SYSPUNKS - 0G NFTS 0N THE NEVM &@@@@@@@@@@@@@@@@@@@@@
-// @@@@@@@@@@@@@@@@@@@@@@@%#*.................................*.@%@@@@@@@@@@@@@@@@@
-// @@@@@@@@@@@@@@@@&,,*** *.#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%, /****,,@@@@@@@@@@@
-// @@@@@@@@@@@@@@@*//////(/(%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%(//////(*.&&@@@@@@@@
-// @@@@@@@@@@@,#&& (%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#,,/@@@@@@@@
-// @@@@@@@@@/,*#%%%%%%%%%%%%%%%%%%%%#.................................../@@@@@@@@@@
-// @@@@@@#*//.,%%%%%%%%%%%%%%%%%%%%&(.@/(((( (*///////  ((((((((((((((#@@@@@@@@@@@@
-// @@@@#/ /%%%%%%%%%%%%%%%%#.       (, &@@*% *%%%%%%%&/ #@@@@@@@@@@@@@@@@@@@@@@@@@@
-// @@@@(, /%%%%%%%%%%%%%%%%#, .@@@@@@@@.#*...*%%%%%%%&/ ...........((/@@@@@@@@@@@@@
-// @@@&.  /%%%%%%%%%%%%%%%%#,  @@@@@@/,*.(%%%%%%%%%%%%%%%%%%%%%%%%%/ @.##@@@@@@@@@@
-// @,,****(%%%%%%%%%%%%%%%%#,  @@@@@@/.*.(%%%%%%%%%%%%%%%%%%%%%%%%%(***,.((@@@@@@@@
-// . .#%%%%%%%%%%%%%%%%%%%%#,@,/*%@@@/  .#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#,%.,*(@@@@@
-// , .#%%%%%%%%%%%%%%%%%%%%%%%%#,*,@@@@...   *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#,(,&@@@
-//   .%%%%%%%%%%%%%%%%%%%%%%%%%%,   &..@@,.@ *%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*   @@@
-// @/&    /%%%%%%%%%%%%%%%%%%%%%%&%&(.@.@@@@,&   .%%%%%%%%%%%%%%%%%%%%%%%%%%* @ @@@
-// @@@@,. /%%%%%%%%%%%%%%%%%%%%%%%%%# ...& @@@@,..#%%%%%%%%%%%%%%%%%%%%%%%%%*..., /
-// @@@@.. /%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%,/ @@@@@%&&% /&%%%%%%%%%%%%%%%%%%%%%%%%(.@
-// @@@@@.#*///(%%%%%%%%%%%%%%%%%%%%%%%%%%/(((*%/@@@@( *///(%%%%%%%%%%%%%%%%%%%%%(.@
-// @@@@@@&,/%,,%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%/ %&@@@@@@*# ,%%%%%%%%%%%%%%%%%%%%%(.@
-// @@@@@@@@@#*,.,,.(%%%%%%%%%%%%%%%%%%%%%%%%%/ %&@@@@@@/( ,%%%%%%%%%%%%%%%%%/.,,/.@
-// @@@@@@@@@@@@# & (%%%%%%%%%%%%%%%%%%%%%%%%%/ %&@@@@@@@/ ,%%%%%%%%%%%%%%%%%*.. @@@
-// @@@@@@@@@@@@@@%(             (&%%%%%%%,   (*@@@@@@@@#( ,%%%%%%%%%%%%%%%%%*   @@@
-// @@@@@@@@@@@@@@@@@///////// * /&%%%%%%%*//%@@@%*.       ,%%%%%%%%%%%%%%%%%*(/&@@@
-// @@@@@@@@@@@@################*#.,...,,,,,####*..%%%%%%%%%%%%%%%%%%%%%#.., .%@@@@@
-// @@@@@@@@@@##*,*******,***********************,*%%%%%%%%%%%%%%%%%#(((/,%&@@@@@@@@
-// @@@@@@@@@.,,%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%/ #&,%@@@@@@@@@@
-// @@@@@@@@@.%,.,,,,,,./%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%(.,,,,,,..,*@@@@@@@@@@@@@
-// @@@@@@@@@@@%.       ,&%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%( ,.     %@@@@@@@@@@@@@@@
-// @@@@@@@@@@@@@@@@@@# %@&@@@@@@@@@*  @@@@@@@@@@@@@@@@@@#%@.%@@@@@@@@@@@@@@@@@@@@@@
+// PunkLabs -> bringing you SysPunks & more
+// MMMMMMMMMMMMMMMMMMMMWWNNNNNNNNNNNNNNNNNNNNNNNNNNNNNWWMMMMMMMMMMMMMMMM
+// MMMMMMMMMMMMMMMMMMMMKo:::::::::::::::::::::::::::::l0MMMMMMMMMMMMMMMM
+// MMMMMMMMMMMMMNXXXXXXk;.............................,xXXXXXXNWMMMMMMMM
+// MMMMMMMMMMMMNx:;;;;;;'...'.........................',;;;;;:dXMMMMMMMM
+// MMMMMMMMMNXK0l'............',;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:dXMMMMMMMM
+// MMMMMMMMWk:,,'.............'oKXXXXXXXXXXXXXXXXXXXXXXXXXXXXXNWMMMMMMMM
+// MMMMMNK0Ol'.'.'.....,;:::::cOWMMMMMMWK000000XWMMMMMMMMMMMMMMMMMMMMMMM
+// MMMMWO:,,'...''.....:0NNNNNNWMMMMMMMKl,,,,,,oNMMMMMMMMMMMMMMMMMMMMMMM
+// MMMMWk,.............cKMMMMMMMMMWKOOOd;.....':xOOOOOOOOO0NMMMMMMMMMMMM
+// MMMMWk,.............cKMMMMMMMMMXo,''''.''...'''''''''''cKMMMMMMMMMMMM
+// MNOxxl,.............cKMMMMMMMMMXl'..'..'''...''........;oxk0WMMMMMMMM
+// W0:.''..............cKMMMMMMMMMXl'............'...........'lXMMMMMMMM
+// WO:.................,ldd0WMMMMMWOdddo;'..'...'.............;odd0WMMMM
+// W0:'''.................'oXWWMMMMMMMMKc'''.....................'oNMMMM
+// MN0kkl,..............'..;llo0WMMMMMMN0kko,....................'oNMMMM
+// MMMMWk,....................'dXNWWMMMMMMW0:'''.................'oXWWWM
+// MMMMWk,..'.................';cco0WMMMMMMNKOOo,.'..............',cclOW
+// MMMMWO:,,''....................,xXNNNWMMMMMWO:,,'.....'...........,xW
+// MMMMMNKK0o'.................'..';:::oKMMMMMMNKKOl'........'.......,xW
+// MMMMMMMMWk:;;'.............'........:0MMMMMMMMMNd'...'....'....';;:kW
+// MMMMMMMMMNXX0l'..............'......:0MMMMMMMMMNo'....''....'.'l0XXWM
+// MMMMMMMMMMMMNx::::::::::,'.....';:::oKMMMMMMMMMNd'........'...'oNMMMM
+// MMMMMMMMMMMMMWNNNNNNNNNXd,.....,xXNNNWMMMMMMMMMNo'.....'.''...'oNMMMM
+// MMMMMMMMMMMMMMMMMMMMMMMW0occccco0WMMMMMMNKOOOOOkc'..'.....',:clkWMMMM
+// MMMMMMMMMMMMMMMMMMMMMMMMWWWWWWWWWMMMMMMW0:'''''''''.......'cKWWWMMMMM
+// MMMMMMMMWXOkkkkkkkkkkkkkkkkkkkkkkkkkkkkko,...'..'.'....,clokNMMMMMMMM
+// MMMMMMMMWx,.'''''''''''''''''''''''''''''..'...........:0WWWMMMMMMMMM
+// MMMMMMMMWKxdddddl;..........................'..':odddddkNMMMMMMMMMMMM
+// MMMMMMMMMMMMMMMMKc''''''''''''''''''''''''''''',xWMMMMMMMMMMMMMMMMMMM
+// MMMMMMMMMMMMMMMMN0kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkKWMMMMMMMMMMMMMMMMMMM
+// MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 
 pragma solidity ^0.8.1;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./ERC721Enumerable.sol";
 
 contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
@@ -60,6 +63,11 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
     mapping (uint256 => Bid) public punkBids;
     mapping (address => uint256) public pendingWithdrawals;
 
+    address public luxyAddress = 0x7c896AA52A795EF7559bdcA5c2e046C4CB436760;
+    string public baseURI = "https://api.syspunks.org";
+    string public imageHash = "ac39af4793119ee46bbff351d8cb6b5f23da60222126add4268e261199a2921b";
+    uint256 public punksRemainingToAssign = 0;
+
     modifier onlyTradablePunk (address from, uint256 tokenId) {
         require(tokenId < 10000, "Out of tokenId");
         require(ownerOf(tokenId) == from, "ERC721: transfer of token that is not own");
@@ -77,6 +85,39 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
     constructor () ERC721("SysPunks", "\xC7\xB7\xC7\x9C\xC6\x9D\xC5\x8A\xC4\xB8\xCF\x9A") {}
 
     // on-chain marketplace -> you should use luxy tho :P
+    function setBaseURI(string memory uri) public onlyOwner {
+        baseURI = uri;
+    }
+
+    function setLuxyAddress(address addr) public onlyOwner {
+        luxyAddress = addr;
+    }
+
+    function checkMintPrice(address addr) public view returns (uint256) {
+        uint256 luxyHeld = IERC20(luxyAddress).balanceOf(addr);
+        if (luxyHeld >= 50000 * 10 ** 18) {
+            return 50 ether;
+        } else if (luxyHeld >= 20000 * 10 ** 18) {
+            return 100 ether;
+        } else if (luxyHeld >= 5000 * 10 ** 18) {
+            return 200 ether;
+        } else if (luxyHeld >= 1000 * 10 ** 18) {
+            return 300 ether;
+        } else {
+            return 350 ether;
+        }
+    }
+
+    function mint() payable public {
+        require(punksRemainingToAssign > 0, "No punks remaining");
+        require(msg.value >= checkMintPrice(msg.sender), "Need to pay more than mint price");
+        uint256 randIndex = _random() % punksRemainingToAssign;
+        uint256 punkIndex = _fillAssignOrder(--punksRemainingToAssign, randIndex);
+        _safeMint(_msgSender(), punkIndex);
+        (bool success,) = owner().call{value: msg.value}("");
+        require(success);
+        emit Assign(_msgSender(), punkIndex);
+    }
 
     function transferPunk(address to, uint256 tokenId) public {
         _safeTransfer(_msgSender(), to, tokenId, "");
@@ -181,6 +222,19 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         punksOfferedForSale[tokenId] = Offer(false, tokenId, from, 0, address(0));
 
         emit PunkNoLongerForSale(tokenId);
+    }
+
+    // pseudo-random function that's pretty robust because of syscoin's pow chainlocks
+    function _random() internal view returns(uint256) {
+        return uint256(
+            keccak256(
+                abi.encodePacked(block.timestamp + block.difficulty + ((uint256(keccak256(abi.encodePacked(block.coinbase)))) / block.timestamp) + block.gaslimit + ((uint256(keccak256(abi.encodePacked(_msgSender())))) / block.timestamp) + block.number)
+            )
+        ) / punksRemainingToAssign;
+    }
+
+    receive() external payable {
+        mint();
     }
 
 }

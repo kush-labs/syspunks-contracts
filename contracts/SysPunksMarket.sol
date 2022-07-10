@@ -31,11 +31,13 @@
 // @@@@@@@@@@@@@@@@@@# %@&@@@@@@@@@*  @@@@@@@@@@@@@@@@@@#%@.%@@@@@@@@@@@@@@@@@@@@@@
 
 pragma solidity ^0.8.1;
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "./ERC721Enumerable.sol";
-import "./TokenMintLib.sol";
 
-contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard, TokenMintLib {
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "./ERC721Enumerable.sol";
+
+contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
 
     struct Offer {
         bool isForSale;
@@ -58,11 +60,6 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard, TokenMint
     mapping (uint256 => Bid) public punkBids;
     mapping (address => uint256) public pendingWithdrawals;
 
-    string public baseURI = "https://api.syspunks.org";
-    string public imageHash = "ac39af4793119ee46bbff351d8cb6b5f23da60222126add4268e261199a2921b";
-
-    uint256 public punksRemainingToAssign = 0;
-
     modifier onlyTradablePunk (address from, uint256 tokenId) {
         require(tokenId < 10000, "Out of tokenId");
         require(ownerOf(tokenId) == from, "ERC721: transfer of token that is not own");
@@ -76,51 +73,8 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard, TokenMint
     event PunkBidWithdrawn(uint256 indexed punkIndex, uint256 value, address indexed fromAddress);
     event PunkBought(uint256 indexed punkIndex, uint256 value, address indexed fromAddress, address indexed toAddress);
     event PunkNoLongerForSale(uint256 indexed punkIndex);
-    event BaseURIUpdate(string uri);
 
-    constructor () ERC721("SysPunks", "\xC7\xB7\xC7\x9C\xC6\x9D\xC5\x8A\xC4\xB8\xCF\x9A") {
-        punksRemainingToAssign = 10000;
-
-        // launch parameters
-        tierTokenAddress = 0x7c896AA52A795EF7559bdcA5c2e046C4CB436760;
-
-        prices = MintPrices({
-            mintPrice0:350 ether,
-            mintPrice1:300 ether,
-            mintPrice2:200 ether,
-            mintPrice3:100 ether,
-            mintPrice4:50 ether});
-
-        tiers = MintTiers({
-        tokenTier0:50000 * WET,
-        tokenTier1:20000 * WET,
-        tokenTier2:5000 * WET,
-        tokenTier3:1000 * WET});
-
-    }
-    function _baseURI() internal view override returns (string memory) {
-        return baseURI;
-    }
-
-    // Admin functions
-    
-    function setBaseURI(string memory uri) public onlyOwner {
-        baseURI = uri;
-        emit BaseURIUpdate(uri);
-    }
-
-    // mint :)
-    function mint() payable public nonReentrant {
-        require(punksRemainingToAssign > 0, "No punks remaining");
-        require(msg.value >= lowestPrice, "Need pay more than lowest amount");
-        require(msg.value >= checkMintPrice(msg.sender), "Need to pay more than mint price");
-        uint256 randIndex = _random() % punksRemainingToAssign;
-        uint256 punkIndex = _fillAssignOrder(--punksRemainingToAssign, randIndex);
-        _safeMint(_msgSender(), punkIndex);
-        (bool success,) = owner().call{value: msg.value}("");
-        require(success);
-        emit Assign(_msgSender(), punkIndex);
-    }
+    constructor () ERC721("SysPunks", "\xC7\xB7\xC7\x9C\xC6\x9D\xC5\x8A\xC4\xB8\xCF\x9A") {}
 
     // on-chain marketplace -> you should use luxy tho :P
 
@@ -200,15 +154,6 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard, TokenMint
         emit PunkBidWithdrawn(tokenId, punkBids[tokenId].value, _msgSender());
     }
 
-    // pseudo-random function that's pretty robust because of syscoin's pow chainlocks
-    function _random() internal view returns(uint256) {
-        return uint256(
-            keccak256(
-                abi.encodePacked(block.timestamp + block.difficulty + ((uint256(keccak256(abi.encodePacked(block.coinbase)))) / block.timestamp) + block.gaslimit + ((uint256(keccak256(abi.encodePacked(_msgSender())))) / block.timestamp) + block.number)
-            )
-        ) / punksRemainingToAssign;
-    }
-
     // internal
     function _fillAssignOrder(uint256 orderA, uint256 orderB) internal returns(uint256) {
         uint256 temp = orderA;
@@ -236,10 +181,6 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard, TokenMint
         punksOfferedForSale[tokenId] = Offer(false, tokenId, from, 0, address(0));
 
         emit PunkNoLongerForSale(tokenId);
-    }
-
-    receive() external payable {
-        mint();
     }
 
 }

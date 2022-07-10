@@ -210,11 +210,29 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
     mapping (uint256 => Offer) public punksOfferedForSale;
     mapping (uint256 => Bid) public punkBids;
     mapping (address => uint256) public pendingWithdrawals;
-    address public luxyAddress = 0x7c896AA52A795EF7559bdcA5c2e046C4CB436760;
+
     string public baseURI = "https://api.syspunks.org";
     string public imageHash = "ac39af4793119ee46bbff351d8cb6b5f23da60222126add4268e261199a2921b";
+
+    address public luxyAddress;
     uint256 public punksRemainingToAssign = 0;
+
+    // eternal mint floor
     uint256 public constant lowestPrice = 50 ether;
+
+    // in ether
+    uint256 public mintPrice0;
+    uint256 public mintPrice1;
+    uint256 public mintPrice2;
+    uint256 public mintPrice3;
+    uint256 public mintPrice4;
+
+    // in WET (18 decimals)
+    uint256 public luxyTier0;
+    uint256 public luxyTier1;
+    uint256 public luxyTier2;
+    uint256 public luxyTier3;
+    uint256 public luxyTier4;
 
     modifier onlyTradablePunk (address from, uint256 tokenId) {
         require(tokenId < 10000, "Out of tokenId");
@@ -230,37 +248,101 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
     event PunkBought(uint256 indexed punkIndex, uint256 value, address indexed fromAddress, address indexed toAddress);
     event PunkNoLongerForSale(uint256 indexed punkIndex);
 
+    // Events for admin functions
+    event BaseURIUpdate(string uri);
+    event LuxyAddressUpdate(address addr);
+    event MintPricesChanged(uint256 price0, uint256 price1, uint256 price2, uint256 price3, uint256 price4);
+    event MintTiersChanged(uint256 tier0, uint256 tier1, uint256 tier2, uint256 tier3);
+
     constructor () ERC721("SysPunks", "\xC7\xB7\xC7\x9C\xC6\x9D\xC5\x8A\xC4\xB8\xCF\x9A") {
         punksRemainingToAssign = 10000;
+
+        // launch parameters
+        luxyAddress = 0x7c896AA52A795EF7559bdcA5c2e046C4CB436760;
+
+        mintPrice0 = 350 ether;
+        mintPrice1 = 300 ether;
+        mintPrice2 = 200 ether;
+        mintPrice3 = 100 ether;
+        mintPrice4 = 50 ether;
+
+        luxyTier0 = 50000 * WET;
+        luxyTier1 = 20000 * WET;
+        luxyTier2 = 5000 * WET;
+        luxyTier3 = 1000 * WET;
+
     }
     function _baseURI() internal view override returns (string memory) {
         return baseURI;
     }
 
+    // Admin functions
+    
     function setBaseURI(string memory uri) public onlyOwner {
         baseURI = uri;
+        emit BaseURIUpdate(uri);
     }
 
     function setLuxyAddress(address addr) public onlyOwner {
         luxyAddress = addr;
+        emit LuxyAddressUpdate(addr);
     }
+
+    function setMintPrices(
+        uint256 price0,
+        uint256 price1,
+        uint256 price2,
+        uint256 price3,
+        uint256 price4) public onlyOwner {
+            require(price0 > price1, "Prices out of order::0");
+            require(price1 > price2, "Prices out of order::1");
+            require(price2 > price3, "Prices out of order::2");
+            require(price3 > price4, "Prices out of order::3");
+
+        mintPrice0 = price0;
+        mintPrice1 = price1;
+        mintPrice2 = price2;
+        mintPrice3 = price3;
+        mintPrice4 = price4;
+
+        emit MintPricesChanged(price0, price1, price2, price3, price4);
+        }
+
+    function setMintTiers(
+        uint256 tier0,
+        uint256 tier1,
+        uint256 tier2,
+        uint256 tier3) public onlyOwner {
+            require(tier0 > tier1, "Prices out of order::0");
+            require(tier1 > tier2, "Prices out of order::1");
+            require(tier2 > tier3, "Prices out of order::2");
+
+        luxyTier0 = tier0;
+        luxyTier1 = tier1;
+        luxyTier2 = tier2;
+        luxyTier3 = tier3;
+
+        emit MintTiersChanged(tier0, tier1, tier2, tier3);
+        }
+
 
     function checkMintPrice(address addr) public view returns (uint256) {
         uint256 luxyHeld = IERC20(luxyAddress).balanceOf(addr);
-        if (luxyHeld >= 50000 * WET) {
-            return 50 ether;
-        } else if (luxyHeld >= 20000 * WET) {
-            return 100 ether;
-        } else if (luxyHeld >= 5000 * WET) {
-            return 200 ether;
-        } else if (luxyHeld >= 1000 * WET) {
-            return 300 ether;
+        if (luxyHeld >= luxyTier0) {
+            return mintPrice4;
+        } else if (luxyHeld >= luxyTier1) {
+            return mintPrice3;
+        } else if (luxyHeld >= luxyTier2) {
+            return mintPrice2;
+        } else if (luxyHeld >= luxyTier3) {
+            return mintPrice1;
         } else {
-            return 350 ether;
+            return mintPrice0;
         }
     }
 
-    function mint() payable public {
+    // mint :)
+    function mint() payable public nonReentrant {
         require(punksRemainingToAssign > 0, "No punks remaining");
         require(msg.value >= lowestPrice, "Need pay more than lowest amount");
         require(msg.value >= checkMintPrice(msg.sender), "Need to pay more than mint price");
@@ -271,6 +353,8 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         require(success);
         emit Assign(_msgSender(), punkIndex);
     }
+
+    // on-chain marketplace -> you should use luxy tho :P
 
     function transferPunk(address to, uint256 tokenId) public {
         _safeTransfer(_msgSender(), to, tokenId, "");
@@ -348,6 +432,7 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         emit PunkBidWithdrawn(tokenId, punkBids[tokenId].value, _msgSender());
     }
 
+    // pseudo-random function that's pretty robust because of syscoin's pow chainlocks
     function _random() internal view returns(uint256) {
         return uint256(
             keccak256(
@@ -356,6 +441,7 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         ) / punksRemainingToAssign;
     }
 
+    // internal
     function _fillAssignOrder(uint256 orderA, uint256 orderB) internal returns(uint256) {
         uint256 temp = orderA;
         if (assignOrders[orderA] > 0) temp = assignOrders[orderA];
@@ -384,6 +470,8 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         emit PunkNoLongerForSale(tokenId);
     }
 
-    receive() external payable {}
+    receive() external payable {
+        mint();
+    }
 
 }

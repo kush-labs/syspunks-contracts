@@ -1,6 +1,7 @@
 require('@nomiclabs/hardhat-waffle');
 require('@nomiclabs/hardhat-ethers');
 require('@nomiclabs/hardhat-etherscan');
+require('hardhat-contract-sizer');
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -51,4 +52,11 @@ module.exports = {
   etherscan: {
     apiKey: process.env.POLYGONSCAN_KEY,
   },
+  contractSizer: {
+    alphaSort: true,
+    disambiguatePaths: false,
+    runOnCompile: true,
+    strict: true,
+    only: [],
+  }
 };

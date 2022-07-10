@@ -37,8 +37,157 @@ pragma solidity ^0.8.1;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./ERC721Enumerable.sol";
+
+abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
+    // Mapping from owner to list of owned token IDs
+    mapping(address => mapping(uint256 => uint256)) private _ownedTokens;
+
+    // Mapping from token ID to index of the owner tokens list
+    mapping(uint256 => uint256) private _ownedTokensIndex;
+
+    // Array with all token ids, used for enumeration
+    uint256[] private _allTokens;
+
+    // Mapping from token id to position in the allTokens array
+    mapping(uint256 => uint256) private _allTokensIndex;
+
+    /**
+     * @dev See {IERC165-supportsInterface}.
+     */
+    function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC721) returns (bool) {
+        return interfaceId == type(IERC721Enumerable).interfaceId
+            || super.supportsInterface(interfaceId);
+    }
+
+    /**
+     * @dev See {IERC721Enumerable-tokenOfOwnerByIndex}.
+     */
+    function tokenOfOwnerByIndex(address owner, uint256 index) public view virtual override returns (uint256) {
+        require(index < balanceOf(owner), "ERC721Enumerable: owner index out of bounds");
+        return _ownedTokens[owner][index];
+    }
+
+    /**
+     * @dev See {IERC721Enumerable-totalSupply}.
+     */
+    function totalSupply() public view virtual override returns (uint256) {
+        return _allTokens.length;
+    }
+
+    /**
+     * @dev See {IERC721Enumerable-tokenByIndex}.
+     */
+    function tokenByIndex(uint256 index) public view virtual override returns (uint256) {
+        require(index < ERC721Enumerable.totalSupply(), "ERC721Enumerable: global index out of bounds");
+        return _allTokens[index];
+    }
+
+    /**
+     * @dev Hook that is called before any token transfer. This includes minting
+     * and burning.
+     *
+     * Calling conditions:
+     *
+     * - When `from` and `to` are both non-zero, ``from``'s `tokenId` will be
+     * transferred to `to`.
+     * - When `from` is zero, `tokenId` will be minted for `to`.
+     * - When `to` is zero, ``from``'s `tokenId` will be burned.
+     * - `from` cannot be the zero address.
+     * - `to` cannot be the zero address.
+     *
+     * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
+     */
+    function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal virtual override {
+        super._beforeTokenTransfer(from, to, tokenId);
+
+        if (from == address(0)) {
+            _addTokenToAllTokensEnumeration(tokenId);
+        } else if (from != to) {
+            _removeTokenFromOwnerEnumeration(from, tokenId);
+        }
+        if (to == address(0)) {
+            _removeTokenFromAllTokensEnumeration(tokenId);
+        } else if (to != from) {
+            _addTokenToOwnerEnumeration(to, tokenId);
+        }
+    }
+
+    /**
+     * @dev Private function to add a token to this extension's ownership-tracking data structures.
+     * @param to address representing the new owner of the given token ID
+     * @param tokenId uint256 ID of the token to be added to the tokens list of the given address
+     */
+    function _addTokenToOwnerEnumeration(address to, uint256 tokenId) private {
+        uint256 length = balanceOf(to);
+        _ownedTokens[to][length] = tokenId;
+        _ownedTokensIndex[tokenId] = length;
+    }
+
+    /**
+     * @dev Private function to add a token to this extension's token tracking data structures.
+     * @param tokenId uint256 ID of the token to be added to the tokens list
+     */
+    function _addTokenToAllTokensEnumeration(uint256 tokenId) private {
+        _allTokensIndex[tokenId] = _allTokens.length;
+        _allTokens.push(tokenId);
+    }
+
+    /**
+     * @dev Private function to remove a token from this extension's ownership-tracking data structures. Note that
+     * while the token is not assigned a new owner, the `_ownedTokensIndex` mapping is _not_ updated: this allows for
+     * gas optimizations e.g. when performing a transfer operation (avoiding double writes).
+     * This has O(1) time complexity, but alters the order of the _ownedTokens array.
+     * @param from address representing the previous owner of the given token ID
+     * @param tokenId uint256 ID of the token to be removed from the tokens list of the given address
+     */
+    function _removeTokenFromOwnerEnumeration(address from, uint256 tokenId) private {
+        // To prevent a gap in from's tokens array, we store the last token in the index of the token to delete, and
+        // then delete the last slot (swap and pop).
+
+        uint256 lastTokenIndex = balanceOf(from) - 1;
+        uint256 tokenIndex = _ownedTokensIndex[tokenId];
+
+        // When the token to delete is the last token, the swap operation is unnecessary
+        if (tokenIndex != lastTokenIndex) {
+            uint256 lastTokenId = _ownedTokens[from][lastTokenIndex];
+
+            _ownedTokens[from][tokenIndex] = lastTokenId; // Move the last token to the slot of the to-delete token
+            _ownedTokensIndex[lastTokenId] = tokenIndex; // Update the moved token's index
+        }
+
+        // This also deletes the contents at the last position of the array
+        delete _ownedTokensIndex[tokenId];
+        delete _ownedTokens[from][lastTokenIndex];
+    }
+
+    /**
+     * @dev Private function to remove a token from this extension's token tracking data structures.
+     * This has O(1) time complexity, but alters the order of the _allTokens array.
+     * @param tokenId uint256 ID of the token to be removed from the tokens list
+     */
+    function _removeTokenFromAllTokensEnumeration(uint256 tokenId) private {
+        // To prevent a gap in the tokens array, we store the last token in the index of the token to delete, and
+        // then delete the last slot (swap and pop).
+
+        uint256 lastTokenIndex = _allTokens.length - 1;
+        uint256 tokenIndex = _allTokensIndex[tokenId];
+
+        // When the token to delete is the last token, the swap operation is unnecessary. However, since this occurs so
+        // rarely (when the last minted token is burnt) that we still do the swap here to avoid the gas cost of adding
+        // an 'if' statement (like in _removeTokenFromOwnerEnumeration)
+        uint256 lastTokenId = _allTokens[lastTokenIndex];
+
+        _allTokens[tokenIndex] = lastTokenId; // Move the last token to the slot of the to-delete token
+        _allTokensIndex[lastTokenId] = tokenIndex; // Update the moved token's index
+
+        // This also deletes the contents at the last position of the array
+        delete _allTokensIndex[tokenId];
+        _allTokens.pop();
+    }
+}
 
 contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
 
@@ -63,7 +212,6 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
     mapping (uint256 => Bid) public punkBids;
     mapping (address => uint256) public pendingWithdrawals;
 
-    address public luxyAddress = 0x7c896AA52A795EF7559bdcA5c2e046C4CB436760;
     string public baseURI = "https://api.syspunks.org";
     string public imageHash = "ac39af4793119ee46bbff351d8cb6b5f23da60222126add4268e261199a2921b";
     uint256 public punksRemainingToAssign = 0;
@@ -82,29 +230,36 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
     event PunkBought(uint256 indexed punkIndex, uint256 value, address indexed fromAddress, address indexed toAddress);
     event PunkNoLongerForSale(uint256 indexed punkIndex);
 
-    constructor () ERC721("SysPunks", "\xC7\xB7\xC7\x9C\xC6\x9D\xC5\x8A\xC4\xB8\xCF\x9A") {}
+    constructor () ERC721("SysPunks", "\xC7\xB7\xC6\xB2\xCE\xB7\xCF\x8F\xCF\x9B") {
+        punksRemainingToAssign = 10000;
+    }
 
-    // on-chain marketplace -> you should use luxy tho :P
+    function _baseURI() internal view override returns (string memory) {
+        return baseURI;
+    }
+    
     function setBaseURI(string memory uri) public onlyOwner {
         baseURI = uri;
     }
 
-    function setLuxyAddress(address addr) public onlyOwner {
-        luxyAddress = addr;
-    }
-
+    // luxy-based mint price
     function checkMintPrice(address addr) public view returns (uint256) {
-        uint256 luxyHeld = IERC20(luxyAddress).balanceOf(addr);
+        uint256 luxyHeld = IERC20(0xf3660dF79Fb9d0C2033775194310719733aA3601).balanceOf(addr);
         if (luxyHeld >= 50000 * 10 ** 18) {
-            return 50 ether;
+            // return 50 ether;
+            return 50000000000 wei;
         } else if (luxyHeld >= 20000 * 10 ** 18) {
-            return 100 ether;
+            // return 100 ether;
+            return 100000000000 wei;
         } else if (luxyHeld >= 5000 * 10 ** 18) {
-            return 200 ether;
+            // return 200 ether;
+            return 200000000000 wei;
         } else if (luxyHeld >= 1000 * 10 ** 18) {
-            return 300 ether;
+            // return 300 ether;
+            return 300000000000 wei;
         } else {
-            return 350 ether;
+            // return 350 ether;
+            return 350000000000 wei;
         }
     }
 
@@ -122,6 +277,8 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
     function transferPunk(address to, uint256 tokenId) public {
         _safeTransfer(_msgSender(), to, tokenId, "");
     }
+
+    // on-chain marketplace -> you should use luxy tho :P
 
     function punkNoLongerForSale(uint256 tokenId) public {
         _punkNoLongerForSale(_msgSender(), tokenId);

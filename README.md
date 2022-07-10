@@ -10,6 +10,10 @@ Be part of the first official NFT collection on Syscoin NEVM as a Syspunk OG.
 - [Luxy Collection](https://beta.luxy.io/collection/)
 - [OpenSea Collection](https://opensea.io/collection/)
 
+## Addresses
+- Mumbai Contract: https://mumbai.polygonscan.com/address/0x48F02bCEe1C5e75c742deAf61C4033b15Da04111#code
+- Mumbai Token: https://mumbai.polygonscan.com/token/0xf3660dF79Fb9d0C2033775194310719733aA3601
+
 ## Running
 These contracts are compiled and deployed using [Hardhat](https://hardhat.org/).
 

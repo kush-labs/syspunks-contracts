@@ -3,7 +3,7 @@
     "@nomiclabs/hardhat-etherscan": "^2.1.8",
     "@openzeppelin/contracts": "^4.7.0",
     "dotenv": "^10.0.0",
-    "hardhat": "^2.8.0"
+    "hardhat": "2.8.3"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.0",

@@ -57,16 +57,32 @@ abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC721) returns (bool) {
-        return interfaceId == type(IERC721Enumerable).interfaceId
-            || super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(IERC165, ERC721)
+        returns (bool)
+    {
+        return
+            interfaceId == type(IERC721Enumerable).interfaceId ||
+            super.supportsInterface(interfaceId);
     }
 
     /**
      * @dev See {IERC721Enumerable-tokenOfOwnerByIndex}.
      */
-    function tokenOfOwnerByIndex(address owner, uint256 index) public view virtual override returns (uint256) {
-        require(index < balanceOf(owner), "ERC721Enumerable: owner index out of bounds");
+    function tokenOfOwnerByIndex(address owner, uint256 index)
+        public
+        view
+        virtual
+        override
+        returns (uint256)
+    {
+        require(
+            index < balanceOf(owner),
+            "ERC721Enumerable: owner index out of bounds"
+        );
         return _ownedTokens[owner][index];
     }
 
@@ -80,8 +96,17 @@ abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
     /**
      * @dev See {IERC721Enumerable-tokenByIndex}.
      */
-    function tokenByIndex(uint256 index) public view virtual override returns (uint256) {
-        require(index < ERC721Enumerable.totalSupply(), "ERC721Enumerable: global index out of bounds");
+    function tokenByIndex(uint256 index)
+        public
+        view
+        virtual
+        override
+        returns (uint256)
+    {
+        require(
+            index < ERC721Enumerable.totalSupply(),
+            "ERC721Enumerable: global index out of bounds"
+        );
         return _allTokens[index];
     }
 
@@ -100,7 +125,11 @@ abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
      *
      * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
      */
-    function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal virtual override {
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal virtual override {
         super._beforeTokenTransfer(from, to, tokenId);
 
         if (from == address(0)) {
@@ -143,7 +172,9 @@ abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
      * @param from address representing the previous owner of the given token ID
      * @param tokenId uint256 ID of the token to be removed from the tokens list of the given address
      */
-    function _removeTokenFromOwnerEnumeration(address from, uint256 tokenId) private {
+    function _removeTokenFromOwnerEnumeration(address from, uint256 tokenId)
+        private
+    {
         // To prevent a gap in from's tokens array, we store the last token in the index of the token to delete, and
         // then delete the last slot (swap and pop).
 
@@ -190,13 +221,12 @@ abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
 }
 
 contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
-
     struct Offer {
         bool isForSale;
         uint256 punkIndex;
         address seller;
-        uint256 minValue;          // in ether
-        address onlySellTo;     // specify to sell only to a specific person
+        uint256 minValue; // in ether
+        address onlySellTo; // specify to sell only to a specific person
     }
 
     struct Bid {
@@ -208,71 +238,126 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
 
     mapping(uint256 => uint256) private assignOrders;
 
-    mapping (uint256 => Offer) public punksOfferedForSale;
-    mapping (uint256 => Bid) public punkBids;
-    mapping (address => uint256) public pendingWithdrawals;
+    mapping(uint256 => Offer) public punksOfferedForSale;
+    mapping(uint256 => Bid) public punkBids;
+    mapping(address => uint256) public pendingWithdrawals;
 
-    string public baseURI = "https://api.syspunks.org";
-    string public imageHash = "ac39af4793119ee46bbff351d8cb6b5f23da60222126add4268e261199a2921b";
-    
+    string public baseURI = "https://api.syspunks.org/api/punk/";
+    string public imageHash =
+        "ac39af4793119ee46bbff351d8cb6b5f23da60222126add4268e261199a2921b";
     uint256 public punksRemainingToAssign = 0;
+    IERC20 public luxy = IERC20(0x4b3ce4ebCF0f3280227E26d63870D098e5173A58);
 
-    modifier onlyTradablePunk (address from, uint256 tokenId) {
+    modifier onlyTradablePunk(address from, uint256 tokenId) {
         require(tokenId < 10000, "Out of tokenId");
-        require(ownerOf(tokenId) == from, "ERC721: transfer of token that is not own");
+        require(
+            ownerOf(tokenId) == from,
+            "ERC721: transfer of token that is not own"
+        );
         _;
     }
 
     event Assign(address indexed to, uint256 punkIndex);
-    event PunkTransfer(address indexed from, address indexed to, uint256 punkIndex);
-    event PunkOffered(uint256 indexed punkIndex, uint256 minValue, address indexed toAddress);
-    event PunkBidEntered(uint256 indexed punkIndex, uint256 value, address indexed fromAddress);
-    event PunkBidWithdrawn(uint256 indexed punkIndex, uint256 value, address indexed fromAddress);
-    event PunkBought(uint256 indexed punkIndex, uint256 value, address indexed fromAddress, address indexed toAddress);
+    event PunkTransfer(
+        address indexed from,
+        address indexed to,
+        uint256 punkIndex
+    );
+    event PunkOffered(
+        uint256 indexed punkIndex,
+        uint256 minValue,
+        address indexed toAddress
+    );
+    event PunkBidEntered(
+        uint256 indexed punkIndex,
+        uint256 value,
+        address indexed fromAddress
+    );
+    event PunkBidWithdrawn(
+        uint256 indexed punkIndex,
+        uint256 value,
+        address indexed fromAddress
+    );
+    event PunkBought(
+        uint256 indexed punkIndex,
+        uint256 value,
+        address indexed fromAddress,
+        address indexed toAddress
+    );
     event PunkNoLongerForSale(uint256 indexed punkIndex);
 
-    constructor () ERC721("SysPunks", "\xC7\xB7\xC6\xB2\xCE\xB7\xCF\x8F\xCF\x9B") {
+    constructor()
+        ERC721("SysPunks", "\xC7\xB7\xC6\xB2\xCE\xB7\xCF\x8F\xCF\x9B")
+    {
         punksRemainingToAssign = 10000;
     }
 
     function _baseURI() internal view override returns (string memory) {
         return baseURI;
     }
-    
+
     function setBaseURI(string memory uri) public onlyOwner {
         baseURI = uri;
     }
 
+    function setLuxy(IERC20 luxy_) public onlyOwner {
+        luxy = luxy_;
+    }
+
     // luxy-based mint price
     function checkMintPrice(address addr) public view returns (uint256) {
-        uint256 luxyHeld = IERC20(0xf3660dF79Fb9d0C2033775194310719733aA3601).balanceOf(addr);
-        if (luxyHeld >= 50000 * 10 ** 18) {
+        uint256 luxyHeld = luxy.balanceOf(addr);
+        if (luxyHeld >= 50000 ether) {
             // return 50 ether;
-            return 50000000000 wei;
-        } else if (luxyHeld >= 20000 * 10 ** 18) {
+            return 50 ether;
+        } else if (luxyHeld >= 20000 ether) {
             // return 100 ether;
-            return 100000000000 wei;
-        } else if (luxyHeld >= 5000 * 10 ** 18) {
+            return 100 ether;
+        } else if (luxyHeld >= 5000 ether) {
             // return 200 ether;
-            return 200000000000 wei;
-        } else if (luxyHeld >= 1000 * 10 ** 18) {
+            return 200 ether;
+        } else if (luxyHeld >= 1000 ether) {
             // return 300 ether;
-            return 300000000000 wei;
+            return 300 ether;
         } else {
             // return 350 ether;
-            return 350000000000 wei;
+            return 350 ether;
         }
     }
 
-    function mint() payable public {
+    function mint() public payable {
         require(punksRemainingToAssign > 0, "No punks remaining");
-        require(msg.value >= checkMintPrice(msg.sender), "Need to pay more than mint price");
+        require(msg.value >= checkMintPrice(msg.sender), "Invalid Amount");
         uint256 randIndex = _random() % punksRemainingToAssign;
-        uint256 punkIndex = _fillAssignOrder(--punksRemainingToAssign, randIndex);
+        uint256 punkIndex = _fillAssignOrder(
+            --punksRemainingToAssign,
+            randIndex
+        );
         _safeMint(_msgSender(), punkIndex);
-        (bool success,) = owner().call{value: msg.value}("");
+        (bool success, ) = owner().call{value: msg.value}("");
         require(success);
         emit Assign(_msgSender(), punkIndex);
+    }
+
+    function mintInBatch(uint256 num) public payable {
+        require(num > 0, "Need to mint at least 1");
+        require(punksRemainingToAssign >= num, "No punks remaining");
+        require(num <= 8, "Exceeds max batch per mint");
+        require(
+            msg.value >= (checkMintPrice(msg.sender) * num),
+            "Invalid Amount"
+        );
+        (bool success, ) = owner().call{value: msg.value}("");
+        require(success, "Transfer failed");
+        for (uint256 i; i < num; i++) {
+            uint256 randIndex = _random() % punksRemainingToAssign;
+            uint256 punkIndex = _fillAssignOrder(
+                --punksRemainingToAssign,
+                randIndex
+            );
+            _safeMint(_msgSender(), punkIndex);
+            emit Assign(_msgSender(), punkIndex);
+        }
     }
 
     function transferPunk(address to, uint256 tokenId) public {
@@ -285,21 +370,43 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         _punkNoLongerForSale(_msgSender(), tokenId);
     }
 
-    function offerPunkForSale(uint256 tokenId, uint256 minSalePriceInWei) public onlyTradablePunk(_msgSender(), tokenId) {
-        punksOfferedForSale[tokenId] = Offer(true, tokenId, _msgSender(), minSalePriceInWei, address(0));
+    function offerPunkForSale(uint256 tokenId, uint256 minSalePriceInWei)
+        public
+        onlyTradablePunk(_msgSender(), tokenId)
+    {
+        punksOfferedForSale[tokenId] = Offer(
+            true,
+            tokenId,
+            _msgSender(),
+            minSalePriceInWei,
+            address(0)
+        );
         emit PunkOffered(tokenId, minSalePriceInWei, address(0));
     }
 
-    function offerPunkForSaleToAddress(uint256 tokenId, uint256 minSalePriceInWei, address toAddress) public onlyTradablePunk(_msgSender(), tokenId) {
-        punksOfferedForSale[tokenId] = Offer(true, tokenId, _msgSender(), minSalePriceInWei, toAddress);
+    function offerPunkForSaleToAddress(
+        uint256 tokenId,
+        uint256 minSalePriceInWei,
+        address toAddress
+    ) public onlyTradablePunk(_msgSender(), tokenId) {
+        punksOfferedForSale[tokenId] = Offer(
+            true,
+            tokenId,
+            _msgSender(),
+            minSalePriceInWei,
+            toAddress
+        );
         emit PunkOffered(tokenId, minSalePriceInWei, toAddress);
     }
 
-    function buyPunk(uint256 tokenId) payable public {
+    function buyPunk(uint256 tokenId) public payable {
         Offer memory offer = punksOfferedForSale[tokenId];
         require(tokenId < 10000, "Out of tokenId");
         require(offer.isForSale, "Punk is not for sale");
-        require(offer.onlySellTo == address(0) || offer.onlySellTo == _msgSender(), "Unable to sell");
+        require(
+            offer.onlySellTo == address(0) || offer.onlySellTo == _msgSender(),
+            "Unable to sell"
+        );
         require(msg.value >= offer.minValue, "Insufficient amount to pay");
         require(ownerOf(tokenId) == offer.seller, "Not punk seller");
 
@@ -312,7 +419,7 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
     function withdraw() public nonReentrant {
         uint256 amount = pendingWithdrawals[_msgSender()];
         pendingWithdrawals[_msgSender()] = 0;
-        (bool success,) = _msgSender().call{value: amount}("");
+        (bool success, ) = _msgSender().call{value: amount}("");
         require(success);
     }
 
@@ -329,7 +436,10 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         emit PunkBidEntered(tokenId, msg.value, _msgSender());
     }
 
-    function acceptBidForPunk(uint256 tokenId, uint256 minPrice) public onlyTradablePunk(_msgSender(), tokenId) {
+    function acceptBidForPunk(uint256 tokenId, uint256 minPrice)
+        public
+        onlyTradablePunk(_msgSender(), tokenId)
+    {
         require(punkBids[tokenId].value >= minPrice, "Bid price is low");
         Bid memory bid = punkBids[tokenId];
 
@@ -348,22 +458,30 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         uint256 amount = punkBids[tokenId].value;
         punkBids[tokenId] = Bid(false, tokenId, address(0), 0);
         // Refund the bid money
-        (bool success,) = _msgSender().call{value: amount}("");
+        (bool success, ) = _msgSender().call{value: amount}("");
         require(success);
         emit PunkBidWithdrawn(tokenId, punkBids[tokenId].value, _msgSender());
     }
 
     // internal
-    function _fillAssignOrder(uint256 orderA, uint256 orderB) internal returns(uint256) {
+    function _fillAssignOrder(uint256 orderA, uint256 orderB)
+        internal
+        returns (uint256)
+    {
         uint256 temp = orderA;
         if (assignOrders[orderA] > 0) temp = assignOrders[orderA];
         assignOrders[orderA] = orderB;
-        if (assignOrders[orderB] > 0) assignOrders[orderA] = assignOrders[orderB];
+        if (assignOrders[orderB] > 0)
+            assignOrders[orderA] = assignOrders[orderB];
         assignOrders[orderB] = temp;
         return assignOrders[orderA];
     }
 
-    function _transfer(address from, address to, uint256 tokenId) internal override onlyTradablePunk(from, tokenId) {
+    function _transfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal override onlyTradablePunk(from, tokenId) {
         super._transfer(from, to, tokenId);
         emit PunkTransfer(from, to, tokenId);
         if (punksOfferedForSale[tokenId].isForSale) {
@@ -376,23 +494,47 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         }
     }
 
-    function _punkNoLongerForSale(address from, uint256 tokenId) internal onlyTradablePunk(from, tokenId) {
-        punksOfferedForSale[tokenId] = Offer(false, tokenId, from, 0, address(0));
+    function _punkNoLongerForSale(address from, uint256 tokenId)
+        internal
+        onlyTradablePunk(from, tokenId)
+    {
+        punksOfferedForSale[tokenId] = Offer(
+            false,
+            tokenId,
+            from,
+            0,
+            address(0)
+        );
 
         emit PunkNoLongerForSale(tokenId);
     }
 
     // pseudo-random function that's pretty robust because of syscoin's pow chainlocks
-    function _random() internal view returns(uint256) {
-        return uint256(
-            keccak256(
-                abi.encodePacked(block.timestamp + block.difficulty + ((uint256(keccak256(abi.encodePacked(block.coinbase)))) / block.timestamp) + block.gaslimit + ((uint256(keccak256(abi.encodePacked(_msgSender())))) / block.timestamp) + block.number)
-            )
-        ) / punksRemainingToAssign;
+    function _random() internal view returns (uint256) {
+        return
+            uint256(
+                keccak256(
+                    abi.encodePacked(
+                        block.timestamp +
+                            block.difficulty +
+                            ((
+                                uint256(
+                                    keccak256(abi.encodePacked(block.coinbase))
+                                )
+                            ) / block.timestamp) +
+                            block.gaslimit +
+                            ((
+                                uint256(
+                                    keccak256(abi.encodePacked(_msgSender()))
+                                )
+                            ) / block.timestamp) +
+                            block.number
+                    )
+                )
+            ) / punksRemainingToAssign;
     }
 
     receive() external payable {
         mint();
     }
-
 }

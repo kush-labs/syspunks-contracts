@@ -1,6 +1,4 @@
-// SPDX-License-Identifier: MIT
-            
-////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
+////// SPDX-License-Identifier: MIT
 // OpenZeppelin Contracts v4.4.1 (utils/introspection/IERC165.sol)
 
 pragma solidity ^0.8.0;
@@ -26,9 +24,6 @@ interface IERC165 {
     function supportsInterface(bytes4 interfaceId) external view returns (bool);
 }
 
-
-
-            
 ////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
 // OpenZeppelin Contracts (last updated v4.7.0) (token/ERC721/IERC721.sol)
 
@@ -43,17 +38,29 @@ interface IERC721 is IERC165 {
     /**
      * @dev Emitted when `tokenId` token is transferred from `from` to `to`.
      */
-    event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
+    event Transfer(
+        address indexed from,
+        address indexed to,
+        uint256 indexed tokenId
+    );
 
     /**
      * @dev Emitted when `owner` enables `approved` to manage the `tokenId` token.
      */
-    event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);
+    event Approval(
+        address indexed owner,
+        address indexed approved,
+        uint256 indexed tokenId
+    );
 
     /**
      * @dev Emitted when `owner` enables or disables (`approved`) `operator` to manage all of its assets.
      */
-    event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
+    event ApprovalForAll(
+        address indexed owner,
+        address indexed operator,
+        bool approved
+    );
 
     /**
      * @dev Returns the number of tokens in ``owner``'s account.
@@ -163,19 +170,22 @@ interface IERC721 is IERC165 {
      *
      * - `tokenId` must exist.
      */
-    function getApproved(uint256 tokenId) external view returns (address operator);
+    function getApproved(uint256 tokenId)
+        external
+        view
+        returns (address operator);
 
     /**
      * @dev Returns if the `operator` is allowed to manage all of the assets of `owner`.
      *
      * See {setApprovalForAll}
      */
-    function isApprovedForAll(address owner, address operator) external view returns (bool);
+    function isApprovedForAll(address owner, address operator)
+        external
+        view
+        returns (bool);
 }
 
-
-
-            
 ////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
 // OpenZeppelin Contracts v4.4.1 (utils/introspection/ERC165.sol)
 
@@ -201,14 +211,17 @@ abstract contract ERC165 is IERC165 {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
         return interfaceId == type(IERC165).interfaceId;
     }
 }
 
-
-
-            
 ////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
 // OpenZeppelin Contracts (last updated v4.7.0) (utils/Strings.sol)
 
@@ -265,7 +278,11 @@ library Strings {
     /**
      * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation with fixed length.
      */
-    function toHexString(uint256 value, uint256 length) internal pure returns (string memory) {
+    function toHexString(uint256 value, uint256 length)
+        internal
+        pure
+        returns (string memory)
+    {
         bytes memory buffer = new bytes(2 * length + 2);
         buffer[0] = "0";
         buffer[1] = "x";
@@ -285,9 +302,6 @@ library Strings {
     }
 }
 
-
-
-            
 ////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
 // OpenZeppelin Contracts v4.4.1 (utils/Context.sol)
 
@@ -313,9 +327,6 @@ abstract contract Context {
     }
 }
 
-
-
-            
 ////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
 // OpenZeppelin Contracts (last updated v4.7.0) (utils/Address.sol)
 
@@ -376,10 +387,16 @@ library Address {
      * https://solidity.readthedocs.io/en/v0.5.11/security-considerations.html#use-the-checks-effects-interactions-pattern[checks-effects-interactions pattern].
      */
     function sendValue(address payable recipient, uint256 amount) internal {
-        require(address(this).balance >= amount, "Address: insufficient balance");
+        require(
+            address(this).balance >= amount,
+            "Address: insufficient balance"
+        );
 
         (bool success, ) = recipient.call{value: amount}("");
-        require(success, "Address: unable to send value, recipient may have reverted");
+        require(
+            success,
+            "Address: unable to send value, recipient may have reverted"
+        );
     }
 
     /**
@@ -400,7 +417,10 @@ library Address {
      *
      * _Available since v3.1._
      */
-    function functionCall(address target, bytes memory data) internal returns (bytes memory) {
+    function functionCall(address target, bytes memory data)
+        internal
+        returns (bytes memory)
+    {
         return functionCall(target, data, "Address: low-level call failed");
     }
 
@@ -434,7 +454,13 @@ library Address {
         bytes memory data,
         uint256 value
     ) internal returns (bytes memory) {
-        return functionCallWithValue(target, data, value, "Address: low-level call with value failed");
+        return
+            functionCallWithValue(
+                target,
+                data,
+                value,
+                "Address: low-level call with value failed"
+            );
     }
 
     /**
@@ -449,10 +475,15 @@ library Address {
         uint256 value,
         string memory errorMessage
     ) internal returns (bytes memory) {
-        require(address(this).balance >= value, "Address: insufficient balance for call");
+        require(
+            address(this).balance >= value,
+            "Address: insufficient balance for call"
+        );
         require(isContract(target), "Address: call to non-contract");
 
-        (bool success, bytes memory returndata) = target.call{value: value}(data);
+        (bool success, bytes memory returndata) = target.call{value: value}(
+            data
+        );
         return verifyCallResult(success, returndata, errorMessage);
     }
 
@@ -462,8 +493,17 @@ library Address {
      *
      * _Available since v3.3._
      */
-    function functionStaticCall(address target, bytes memory data) internal view returns (bytes memory) {
-        return functionStaticCall(target, data, "Address: low-level static call failed");
+    function functionStaticCall(address target, bytes memory data)
+        internal
+        view
+        returns (bytes memory)
+    {
+        return
+            functionStaticCall(
+                target,
+                data,
+                "Address: low-level static call failed"
+            );
     }
 
     /**
@@ -489,8 +529,16 @@ library Address {
      *
      * _Available since v3.4._
      */
-    function functionDelegateCall(address target, bytes memory data) internal returns (bytes memory) {
-        return functionDelegateCall(target, data, "Address: low-level delegate call failed");
+    function functionDelegateCall(address target, bytes memory data)
+        internal
+        returns (bytes memory)
+    {
+        return
+            functionDelegateCall(
+                target,
+                data,
+                "Address: low-level delegate call failed"
+            );
     }
 
     /**
@@ -539,9 +587,6 @@ library Address {
     }
 }
 
-
-
-            
 ////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
 // OpenZeppelin Contracts v4.4.1 (token/ERC721/extensions/IERC721Metadata.sol)
 
@@ -570,9 +615,6 @@ interface IERC721Metadata is IERC721 {
     function tokenURI(uint256 tokenId) external view returns (string memory);
 }
 
-
-
-            
 ////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
 // OpenZeppelin Contracts (last updated v4.6.0) (token/ERC721/IERC721Receiver.sol)
 
@@ -601,9 +643,6 @@ interface IERC721Receiver {
     ) external returns (bytes4);
 }
 
-
-
-            
 ////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
 // OpenZeppelin Contracts (last updated v4.6.0) (token/ERC20/IERC20.sol)
 
@@ -625,7 +664,11 @@ interface IERC20 {
      * @dev Emitted when the allowance of a `spender` for an `owner` is set by
      * a call to {approve}. `value` is the new allowance.
      */
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint256 value
+    );
 
     /**
      * @dev Returns the amount of tokens in existence.
@@ -653,7 +696,10 @@ interface IERC20 {
      *
      * This value changes when {approve} or {transferFrom} are called.
      */
-    function allowance(address owner, address spender) external view returns (uint256);
+    function allowance(address owner, address spender)
+        external
+        view
+        returns (uint256);
 
     /**
      * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
@@ -687,9 +733,6 @@ interface IERC20 {
     ) external returns (bool);
 }
 
-
-
-            
 ////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
 // OpenZeppelin Contracts (last updated v4.5.0) (token/ERC721/extensions/IERC721Enumerable.sol)
 
@@ -711,7 +754,10 @@ interface IERC721Enumerable is IERC721 {
      * @dev Returns a token ID owned by `owner` at a given `index` of its token list.
      * Use along with {balanceOf} to enumerate all of ``owner``'s tokens.
      */
-    function tokenOfOwnerByIndex(address owner, uint256 index) external view returns (uint256);
+    function tokenOfOwnerByIndex(address owner, uint256 index)
+        external
+        view
+        returns (uint256);
 
     /**
      * @dev Returns a token ID at a given `index` of all the tokens stored by the contract.
@@ -720,9 +766,6 @@ interface IERC721Enumerable is IERC721 {
     function tokenByIndex(uint256 index) external view returns (uint256);
 }
 
-
-
-            
 ////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
 // OpenZeppelin Contracts (last updated v4.7.0) (token/ERC721/ERC721.sol)
 
@@ -774,7 +817,13 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC165, IERC165) returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(ERC165, IERC165)
+        returns (bool)
+    {
         return
             interfaceId == type(IERC721).interfaceId ||
             interfaceId == type(IERC721Metadata).interfaceId ||
@@ -784,15 +833,30 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
     /**
      * @dev See {IERC721-balanceOf}.
      */
-    function balanceOf(address owner) public view virtual override returns (uint256) {
-        require(owner != address(0), "ERC721: address zero is not a valid owner");
+    function balanceOf(address owner)
+        public
+        view
+        virtual
+        override
+        returns (uint256)
+    {
+        require(
+            owner != address(0),
+            "ERC721: address zero is not a valid owner"
+        );
         return _balances[owner];
     }
 
     /**
      * @dev See {IERC721-ownerOf}.
      */
-    function ownerOf(uint256 tokenId) public view virtual override returns (address) {
+    function ownerOf(uint256 tokenId)
+        public
+        view
+        virtual
+        override
+        returns (address)
+    {
         address owner = _owners[tokenId];
         require(owner != address(0), "ERC721: invalid token ID");
         return owner;
@@ -815,11 +879,20 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
     /**
      * @dev See {IERC721Metadata-tokenURI}.
      */
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        virtual
+        override
+        returns (string memory)
+    {
         _requireMinted(tokenId);
 
         string memory baseURI = _baseURI();
-        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString())) : "";
+        return
+            bytes(baseURI).length > 0
+                ? string(abi.encodePacked(baseURI, tokenId.toString()))
+                : "";
     }
 
     /**
@@ -849,7 +922,13 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
     /**
      * @dev See {IERC721-getApproved}.
      */
-    function getApproved(uint256 tokenId) public view virtual override returns (address) {
+    function getApproved(uint256 tokenId)
+        public
+        view
+        virtual
+        override
+        returns (address)
+    {
         _requireMinted(tokenId);
 
         return _tokenApprovals[tokenId];
@@ -858,14 +937,24 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
     /**
      * @dev See {IERC721-setApprovalForAll}.
      */
-    function setApprovalForAll(address operator, bool approved) public virtual override {
+    function setApprovalForAll(address operator, bool approved)
+        public
+        virtual
+        override
+    {
         _setApprovalForAll(_msgSender(), operator, approved);
     }
 
     /**
      * @dev See {IERC721-isApprovedForAll}.
      */
-    function isApprovedForAll(address owner, address operator) public view virtual override returns (bool) {
+    function isApprovedForAll(address owner, address operator)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
         return _operatorApprovals[owner][operator];
     }
 
@@ -878,7 +967,10 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
         uint256 tokenId
     ) public virtual override {
         //solhint-disable-next-line max-line-length
-        require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: caller is not token owner nor approved");
+        require(
+            _isApprovedOrOwner(_msgSender(), tokenId),
+            "ERC721: caller is not token owner nor approved"
+        );
 
         _transfer(from, to, tokenId);
     }
@@ -903,7 +995,10 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
         uint256 tokenId,
         bytes memory data
     ) public virtual override {
-        require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: caller is not token owner nor approved");
+        require(
+            _isApprovedOrOwner(_msgSender(), tokenId),
+            "ERC721: caller is not token owner nor approved"
+        );
         _safeTransfer(from, to, tokenId, data);
     }
 
@@ -932,7 +1027,10 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
         bytes memory data
     ) internal virtual {
         _transfer(from, to, tokenId);
-        require(_checkOnERC721Received(from, to, tokenId, data), "ERC721: transfer to non ERC721Receiver implementer");
+        require(
+            _checkOnERC721Received(from, to, tokenId, data),
+            "ERC721: transfer to non ERC721Receiver implementer"
+        );
     }
 
     /**
@@ -954,9 +1052,16 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
      *
      * - `tokenId` must exist.
      */
-    function _isApprovedOrOwner(address spender, uint256 tokenId) internal view virtual returns (bool) {
+    function _isApprovedOrOwner(address spender, uint256 tokenId)
+        internal
+        view
+        virtual
+        returns (bool)
+    {
         address owner = ERC721.ownerOf(tokenId);
-        return (spender == owner || isApprovedForAll(owner, spender) || getApproved(tokenId) == spender);
+        return (spender == owner ||
+            isApprovedForAll(owner, spender) ||
+            getApproved(tokenId) == spender);
     }
 
     /**
@@ -1057,7 +1162,10 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
         address to,
         uint256 tokenId
     ) internal virtual {
-        require(ERC721.ownerOf(tokenId) == from, "ERC721: transfer from incorrect owner");
+        require(
+            ERC721.ownerOf(tokenId) == from,
+            "ERC721: transfer from incorrect owner"
+        );
         require(to != address(0), "ERC721: transfer to the zero address");
 
         _beforeTokenTransfer(from, to, tokenId);
@@ -1123,11 +1231,20 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
         bytes memory data
     ) private returns (bool) {
         if (to.isContract()) {
-            try IERC721Receiver(to).onERC721Received(_msgSender(), from, tokenId, data) returns (bytes4 retval) {
+            try
+                IERC721Receiver(to).onERC721Received(
+                    _msgSender(),
+                    from,
+                    tokenId,
+                    data
+                )
+            returns (bytes4 retval) {
                 return retval == IERC721Receiver.onERC721Received.selector;
             } catch (bytes memory reason) {
                 if (reason.length == 0) {
-                    revert("ERC721: transfer to non ERC721Receiver implementer");
+                    revert(
+                        "ERC721: transfer to non ERC721Receiver implementer"
+                    );
                 } else {
                     /// @solidity memory-safe-assembly
                     assembly {
@@ -1178,9 +1295,6 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
     ) internal virtual {}
 }
 
-
-
-            
 ////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
 // OpenZeppelin Contracts v4.4.1 (security/ReentrancyGuard.sol)
 
@@ -1245,9 +1359,6 @@ abstract contract ReentrancyGuard {
     }
 }
 
-
-
-            
 ////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
 // OpenZeppelin Contracts (last updated v4.7.0) (access/Ownable.sol)
 
@@ -1270,7 +1381,10 @@ pragma solidity ^0.8.0;
 abstract contract Ownable is Context {
     address private _owner;
 
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    event OwnershipTransferred(
+        address indexed previousOwner,
+        address indexed newOwner
+    );
 
     /**
      * @dev Initializes the contract setting the deployer as the initial owner.
@@ -1317,7 +1431,10 @@ abstract contract Ownable is Context {
      * Can only be called by the current owner.
      */
     function transferOwnership(address newOwner) public virtual onlyOwner {
-        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        require(
+            newOwner != address(0),
+            "Ownable: new owner is the zero address"
+        );
         _transferOwnership(newOwner);
     }
 
@@ -1331,7 +1448,6 @@ abstract contract Ownable is Context {
         emit OwnershipTransferred(oldOwner, newOwner);
     }
 }
-
 
 ////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
 
@@ -1392,16 +1508,32 @@ abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC721) returns (bool) {
-        return interfaceId == type(IERC721Enumerable).interfaceId
-            || super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(IERC165, ERC721)
+        returns (bool)
+    {
+        return
+            interfaceId == type(IERC721Enumerable).interfaceId ||
+            super.supportsInterface(interfaceId);
     }
 
     /**
      * @dev See {IERC721Enumerable-tokenOfOwnerByIndex}.
      */
-    function tokenOfOwnerByIndex(address owner, uint256 index) public view virtual override returns (uint256) {
-        require(index < balanceOf(owner), "ERC721Enumerable: owner index out of bounds");
+    function tokenOfOwnerByIndex(address owner, uint256 index)
+        public
+        view
+        virtual
+        override
+        returns (uint256)
+    {
+        require(
+            index < balanceOf(owner),
+            "ERC721Enumerable: owner index out of bounds"
+        );
         return _ownedTokens[owner][index];
     }
 
@@ -1415,8 +1547,17 @@ abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
     /**
      * @dev See {IERC721Enumerable-tokenByIndex}.
      */
-    function tokenByIndex(uint256 index) public view virtual override returns (uint256) {
-        require(index < ERC721Enumerable.totalSupply(), "ERC721Enumerable: global index out of bounds");
+    function tokenByIndex(uint256 index)
+        public
+        view
+        virtual
+        override
+        returns (uint256)
+    {
+        require(
+            index < ERC721Enumerable.totalSupply(),
+            "ERC721Enumerable: global index out of bounds"
+        );
         return _allTokens[index];
     }
 
@@ -1435,7 +1576,11 @@ abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
      *
      * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
      */
-    function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal virtual override {
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal virtual override {
         super._beforeTokenTransfer(from, to, tokenId);
 
         if (from == address(0)) {
@@ -1478,7 +1623,9 @@ abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
      * @param from address representing the previous owner of the given token ID
      * @param tokenId uint256 ID of the token to be removed from the tokens list of the given address
      */
-    function _removeTokenFromOwnerEnumeration(address from, uint256 tokenId) private {
+    function _removeTokenFromOwnerEnumeration(address from, uint256 tokenId)
+        private
+    {
         // To prevent a gap in from's tokens array, we store the last token in the index of the token to delete, and
         // then delete the last slot (swap and pop).
 
@@ -1525,13 +1672,12 @@ abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
 }
 
 contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
-
     struct Offer {
         bool isForSale;
         uint256 punkIndex;
         address seller;
-        uint256 minValue;          // in ether
-        address onlySellTo;     // specify to sell only to a specific person
+        uint256 minValue; // in ether
+        address onlySellTo; // specify to sell only to a specific person
     }
 
     struct Bid {
@@ -1543,69 +1689,126 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
 
     mapping(uint256 => uint256) private assignOrders;
 
-    mapping (uint256 => Offer) public punksOfferedForSale;
-    mapping (uint256 => Bid) public punkBids;
-    mapping (address => uint256) public pendingWithdrawals;
+    mapping(uint256 => Offer) public punksOfferedForSale;
+    mapping(uint256 => Bid) public punkBids;
+    mapping(address => uint256) public pendingWithdrawals;
 
-    string public baseURI = "https://api.syspunks.org";
-    string public imageHash = "ac39af4793119ee46bbff351d8cb6b5f23da60222126add4268e261199a2921b";
+    string public baseURI = "https://api.syspunks.org/api/punk/";
+    string public imageHash =
+        "ac39af4793119ee46bbff351d8cb6b5f23da60222126add4268e261199a2921b";
     uint256 public punksRemainingToAssign = 0;
+    IERC20 public luxy = IERC20(0x4b3ce4ebCF0f3280227E26d63870D098e5173A58);
 
-    modifier onlyTradablePunk (address from, uint256 tokenId) {
+    modifier onlyTradablePunk(address from, uint256 tokenId) {
         require(tokenId < 10000, "Out of tokenId");
-        require(ownerOf(tokenId) == from, "ERC721: transfer of token that is not own");
+        require(
+            ownerOf(tokenId) == from,
+            "ERC721: transfer of token that is not own"
+        );
         _;
     }
 
     event Assign(address indexed to, uint256 punkIndex);
-    event PunkTransfer(address indexed from, address indexed to, uint256 punkIndex);
-    event PunkOffered(uint256 indexed punkIndex, uint256 minValue, address indexed toAddress);
-    event PunkBidEntered(uint256 indexed punkIndex, uint256 value, address indexed fromAddress);
-    event PunkBidWithdrawn(uint256 indexed punkIndex, uint256 value, address indexed fromAddress);
-    event PunkBought(uint256 indexed punkIndex, uint256 value, address indexed fromAddress, address indexed toAddress);
+    event PunkTransfer(
+        address indexed from,
+        address indexed to,
+        uint256 punkIndex
+    );
+    event PunkOffered(
+        uint256 indexed punkIndex,
+        uint256 minValue,
+        address indexed toAddress
+    );
+    event PunkBidEntered(
+        uint256 indexed punkIndex,
+        uint256 value,
+        address indexed fromAddress
+    );
+    event PunkBidWithdrawn(
+        uint256 indexed punkIndex,
+        uint256 value,
+        address indexed fromAddress
+    );
+    event PunkBought(
+        uint256 indexed punkIndex,
+        uint256 value,
+        address indexed fromAddress,
+        address indexed toAddress
+    );
     event PunkNoLongerForSale(uint256 indexed punkIndex);
 
-    constructor () ERC721("SysPunks", "\xC7\xB7\xC6\xB2\xCE\xB7\xCF\x8F\xCF\x9B") {
+    constructor()
+        ERC721("SysPunks", "\xC7\xB7\xC6\xB2\xCE\xB7\xCF\x8F\xCF\x9B")
+    {
         punksRemainingToAssign = 10000;
     }
 
     function _baseURI() internal view override returns (string memory) {
         return baseURI;
     }
-    
+
     function setBaseURI(string memory uri) public onlyOwner {
         baseURI = uri;
     }
 
+    function setLuxy(IERC20 luxy_) public onlyOwner {
+        luxy = luxy_;
+    }
+
+    // luxy-based mint price
     function checkMintPrice(address addr) public view returns (uint256) {
-        uint256 luxyHeld = IERC20(0xf3660dF79Fb9d0C2033775194310719733aA3601).balanceOf(addr);
-        if (luxyHeld >= 50000 * 10 ** 18) {
+        uint256 luxyHeld = luxy.balanceOf(addr);
+        if (luxyHeld >= 50000 ether) {
             // return 50 ether;
-            return 5000 wei;
-        } else if (luxyHeld >= 20000 * 10 ** 18) {
+            return 50 ether;
+        } else if (luxyHeld >= 20000 ether) {
             // return 100 ether;
-            return 10000 wei;
-        } else if (luxyHeld >= 5000 * 10 ** 18) {
+            return 100 ether;
+        } else if (luxyHeld >= 5000 ether) {
             // return 200 ether;
-            return 20000 wei;
-        } else if (luxyHeld >= 1000 * 10 ** 18) {
+            return 200 ether;
+        } else if (luxyHeld >= 1000 ether) {
             // return 300 ether;
-            return 30000 wei;
+            return 300 ether;
         } else {
             // return 350 ether;
-            return 35000 wei;
+            return 350 ether;
         }
     }
 
-    function mint() payable public {
+    function mint() public payable {
         require(punksRemainingToAssign > 0, "No punks remaining");
-        require(msg.value >= checkMintPrice(msg.sender), "Need to pay more than mint price");
+        require(msg.value >= checkMintPrice(msg.sender), "Invalid Amount");
         uint256 randIndex = _random() % punksRemainingToAssign;
-        uint256 punkIndex = _fillAssignOrder(--punksRemainingToAssign, randIndex);
+        uint256 punkIndex = _fillAssignOrder(
+            --punksRemainingToAssign,
+            randIndex
+        );
         _safeMint(_msgSender(), punkIndex);
-        (bool success,) = owner().call{value: msg.value}("");
+        (bool success, ) = owner().call{value: msg.value}("");
         require(success);
         emit Assign(_msgSender(), punkIndex);
+    }
+
+    function mintInBatch(uint256 num) public payable {
+        require(num > 0, "Need to mint at least 1");
+        require(punksRemainingToAssign >= num, "No punks remaining");
+        require(num <= 8, "Exceeds max batch per mint");
+        require(
+            msg.value >= (checkMintPrice(msg.sender) * num),
+            "Invalid Amount"
+        );
+        (bool success, ) = owner().call{value: msg.value}("");
+        require(success, "Transfer failed");
+        for (uint256 i; i < num; i++) {
+            uint256 randIndex = _random() % punksRemainingToAssign;
+            uint256 punkIndex = _fillAssignOrder(
+                --punksRemainingToAssign,
+                randIndex
+            );
+            _safeMint(_msgSender(), punkIndex);
+            emit Assign(_msgSender(), punkIndex);
+        }
     }
 
     function transferPunk(address to, uint256 tokenId) public {
@@ -1618,21 +1821,43 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         _punkNoLongerForSale(_msgSender(), tokenId);
     }
 
-    function offerPunkForSale(uint256 tokenId, uint256 minSalePriceInWei) public onlyTradablePunk(_msgSender(), tokenId) {
-        punksOfferedForSale[tokenId] = Offer(true, tokenId, _msgSender(), minSalePriceInWei, address(0));
+    function offerPunkForSale(uint256 tokenId, uint256 minSalePriceInWei)
+        public
+        onlyTradablePunk(_msgSender(), tokenId)
+    {
+        punksOfferedForSale[tokenId] = Offer(
+            true,
+            tokenId,
+            _msgSender(),
+            minSalePriceInWei,
+            address(0)
+        );
         emit PunkOffered(tokenId, minSalePriceInWei, address(0));
     }
 
-    function offerPunkForSaleToAddress(uint256 tokenId, uint256 minSalePriceInWei, address toAddress) public onlyTradablePunk(_msgSender(), tokenId) {
-        punksOfferedForSale[tokenId] = Offer(true, tokenId, _msgSender(), minSalePriceInWei, toAddress);
+    function offerPunkForSaleToAddress(
+        uint256 tokenId,
+        uint256 minSalePriceInWei,
+        address toAddress
+    ) public onlyTradablePunk(_msgSender(), tokenId) {
+        punksOfferedForSale[tokenId] = Offer(
+            true,
+            tokenId,
+            _msgSender(),
+            minSalePriceInWei,
+            toAddress
+        );
         emit PunkOffered(tokenId, minSalePriceInWei, toAddress);
     }
 
-    function buyPunk(uint256 tokenId) payable public {
+    function buyPunk(uint256 tokenId) public payable {
         Offer memory offer = punksOfferedForSale[tokenId];
         require(tokenId < 10000, "Out of tokenId");
         require(offer.isForSale, "Punk is not for sale");
-        require(offer.onlySellTo == address(0) || offer.onlySellTo == _msgSender(), "Unable to sell");
+        require(
+            offer.onlySellTo == address(0) || offer.onlySellTo == _msgSender(),
+            "Unable to sell"
+        );
         require(msg.value >= offer.minValue, "Insufficient amount to pay");
         require(ownerOf(tokenId) == offer.seller, "Not punk seller");
 
@@ -1645,7 +1870,7 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
     function withdraw() public nonReentrant {
         uint256 amount = pendingWithdrawals[_msgSender()];
         pendingWithdrawals[_msgSender()] = 0;
-        (bool success,) = _msgSender().call{value: amount}("");
+        (bool success, ) = _msgSender().call{value: amount}("");
         require(success);
     }
 
@@ -1662,7 +1887,10 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         emit PunkBidEntered(tokenId, msg.value, _msgSender());
     }
 
-    function acceptBidForPunk(uint256 tokenId, uint256 minPrice) public onlyTradablePunk(_msgSender(), tokenId) {
+    function acceptBidForPunk(uint256 tokenId, uint256 minPrice)
+        public
+        onlyTradablePunk(_msgSender(), tokenId)
+    {
         require(punkBids[tokenId].value >= minPrice, "Bid price is low");
         Bid memory bid = punkBids[tokenId];
 
@@ -1681,22 +1909,30 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         uint256 amount = punkBids[tokenId].value;
         punkBids[tokenId] = Bid(false, tokenId, address(0), 0);
         // Refund the bid money
-        (bool success,) = _msgSender().call{value: amount}("");
+        (bool success, ) = _msgSender().call{value: amount}("");
         require(success);
         emit PunkBidWithdrawn(tokenId, punkBids[tokenId].value, _msgSender());
     }
 
     // internal
-    function _fillAssignOrder(uint256 orderA, uint256 orderB) internal returns(uint256) {
+    function _fillAssignOrder(uint256 orderA, uint256 orderB)
+        internal
+        returns (uint256)
+    {
         uint256 temp = orderA;
         if (assignOrders[orderA] > 0) temp = assignOrders[orderA];
         assignOrders[orderA] = orderB;
-        if (assignOrders[orderB] > 0) assignOrders[orderA] = assignOrders[orderB];
+        if (assignOrders[orderB] > 0)
+            assignOrders[orderA] = assignOrders[orderB];
         assignOrders[orderB] = temp;
         return assignOrders[orderA];
     }
 
-    function _transfer(address from, address to, uint256 tokenId) internal override onlyTradablePunk(from, tokenId) {
+    function _transfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal override onlyTradablePunk(from, tokenId) {
         super._transfer(from, to, tokenId);
         emit PunkTransfer(from, to, tokenId);
         if (punksOfferedForSale[tokenId].isForSale) {
@@ -1709,23 +1945,47 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         }
     }
 
-    function _punkNoLongerForSale(address from, uint256 tokenId) internal onlyTradablePunk(from, tokenId) {
-        punksOfferedForSale[tokenId] = Offer(false, tokenId, from, 0, address(0));
+    function _punkNoLongerForSale(address from, uint256 tokenId)
+        internal
+        onlyTradablePunk(from, tokenId)
+    {
+        punksOfferedForSale[tokenId] = Offer(
+            false,
+            tokenId,
+            from,
+            0,
+            address(0)
+        );
 
         emit PunkNoLongerForSale(tokenId);
     }
 
     // pseudo-random function that's pretty robust because of syscoin's pow chainlocks
-    function _random() internal view returns(uint256) {
-        return uint256(
-            keccak256(
-                abi.encodePacked(block.timestamp + block.difficulty + ((uint256(keccak256(abi.encodePacked(block.coinbase)))) / block.timestamp) + block.gaslimit + ((uint256(keccak256(abi.encodePacked(_msgSender())))) / block.timestamp) + block.number)
-            )
-        ) / punksRemainingToAssign;
+    function _random() internal view returns (uint256) {
+        return
+            uint256(
+                keccak256(
+                    abi.encodePacked(
+                        block.timestamp +
+                            block.difficulty +
+                            ((
+                                uint256(
+                                    keccak256(abi.encodePacked(block.coinbase))
+                                )
+                            ) / block.timestamp) +
+                            block.gaslimit +
+                            ((
+                                uint256(
+                                    keccak256(abi.encodePacked(_msgSender()))
+                                )
+                            ) / block.timestamp) +
+                            block.number
+                    )
+                )
+            ) / punksRemainingToAssign;
     }
 
     receive() external payable {
         mint();
     }
-
 }

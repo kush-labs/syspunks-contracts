@@ -13,12 +13,14 @@ dotenv.config();
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  solidity: "0.8.1",
-  // solidity: "0.5.16",
-  settings: {
-    optimizer: {
-      enabled: true,
-      runs: 1000
+  solidity: {
+    version: "0.8.1",
+    // solidity: "0.5.16",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 1000
+      }
     }
   },
   networks: {

@@ -2,7 +2,7 @@
 
 Be part of the first official NFT collection on Syscoin NEVM as a Syspunk OG.
 
-![img]()
+![img](./banner.png)
 
 ## Links
 - IPFS Data - [ipfs:///](https://gateway.pinata.cloud/ipfs/)

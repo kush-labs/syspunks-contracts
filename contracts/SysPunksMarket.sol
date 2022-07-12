@@ -245,8 +245,11 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
     string public baseURI = "https://api.syspunks.org/api/punk/";
     string public imageHash =
         "ac39af4793119ee46bbff351d8cb6b5f23da60222126add4268e261199a2921b";
+    string public bgHash =
+        "82f1827e0cd3cbf5502acfbd47afe025d3b628518810d2c2836334892fb4643f";
     uint256 public punksRemainingToAssign = 0;
-    IERC20 public luxy = IERC20(0x4b3ce4ebCF0f3280227E26d63870D098e5173A58);
+    IERC20 public luxy = IERC20(0x6b7a87899490EcE95443e979cA9485CBE7E71522);
+    uint256 public constant MINT_START_TIME = 1657735200;
 
     modifier onlyTradablePunk(address from, uint256 tokenId) {
         require(tokenId < 10000, "Out of tokenId");
@@ -326,6 +329,7 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
     }
 
     function mint() public payable {
+        require(block.timestamp > MINT_START_TIME, "Drop hasnt started yet");
         require(punksRemainingToAssign > 0, "No punks remaining");
         require(msg.value >= checkMintPrice(msg.sender), "Invalid Amount");
         uint256 randIndex = _random() % punksRemainingToAssign;
@@ -340,6 +344,7 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
     }
 
     function mintInBatch(uint256 num) public payable {
+        require(block.timestamp > MINT_START_TIME, "Drop hasnt started yet");
         require(num > 0, "Need to mint at least 1");
         require(punksRemainingToAssign >= num, "No punks remaining");
         require(num <= 8, "Exceeds max batch per mint");

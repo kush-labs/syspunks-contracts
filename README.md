@@ -11,8 +11,11 @@ Be part of the first official NFT collection on Syscoin NEVM as a Syspunk OG.
 - [OpenSea Collection](https://opensea.io/collection/)
 
 ## Addresses
-- Mumbai Contract: https://mumbai.polygonscan.com/address/0xa48d667dee58e80f8ba70b2d25dd92844b043ffe
-- Mumbai Token: https://mumbai.polygonscan.com/token/0xf3660dF79Fb9d0C2033775194310719733aA3601
+- Mumbai Contract: https://mumbai.polygonscan.com/address/0x5EE9d8d36084Bfd8780d7fAEC540eD1d200a75bb
+- Mumbai Token: https://mumbai.polygonscan.com/token/0x4b3ce4ebCF0f3280227E26d63870D098e5173A58
+
+- NEVM Contract: https://explorer.syscoin.org/address/0x...
+- NEVM Luxy: https://explorer.syscoin.org/address/0x6b7a87899490EcE95443e979cA9485CBE7E71522
 
 ## Running
 These contracts are compiled and deployed using [Hardhat](https://hardhat.org/).

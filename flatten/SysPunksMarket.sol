@@ -1,6 +1,185 @@
+// Sources flattened with hardhat v2.8.3 https://hardhat.org
+
+// File @openzeppelin/contracts/utils/Context.sol@v4.7.0
+
 // SPDX-License-Identifier: MIT
-            
-////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
+// OpenZeppelin Contracts v4.4.1 (utils/Context.sol)
+
+pragma solidity ^0.8.0;
+
+/**
+ * @dev Provides information about the current execution context, including the
+ * sender of the transaction and its data. While these are generally available
+ * via msg.sender and msg.data, they should not be accessed in such a direct
+ * manner, since when dealing with meta-transactions the account sending and
+ * paying for execution may not be the actual sender (as far as an application
+ * is concerned).
+ *
+ * This contract is only required for intermediate, library-like contracts.
+ */
+abstract contract Context {
+    function _msgSender() internal view virtual returns (address) {
+        return msg.sender;
+    }
+
+    function _msgData() internal view virtual returns (bytes calldata) {
+        return msg.data;
+    }
+}
+
+
+// File @openzeppelin/contracts/access/Ownable.sol@v4.7.0
+
+// OpenZeppelin Contracts (last updated v4.7.0) (access/Ownable.sol)
+
+pragma solidity ^0.8.0;
+
+/**
+ * @dev Contract module which provides a basic access control mechanism, where
+ * there is an account (an owner) that can be granted exclusive access to
+ * specific functions.
+ *
+ * By default, the owner account will be the one that deploys the contract. This
+ * can later be changed with {transferOwnership}.
+ *
+ * This module is used through inheritance. It will make available the modifier
+ * `onlyOwner`, which can be applied to your functions to restrict their use to
+ * the owner.
+ */
+abstract contract Ownable is Context {
+    address private _owner;
+
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    /**
+     * @dev Initializes the contract setting the deployer as the initial owner.
+     */
+    constructor() {
+        _transferOwnership(_msgSender());
+    }
+
+    /**
+     * @dev Throws if called by any account other than the owner.
+     */
+    modifier onlyOwner() {
+        _checkOwner();
+        _;
+    }
+
+    /**
+     * @dev Returns the address of the current owner.
+     */
+    function owner() public view virtual returns (address) {
+        return _owner;
+    }
+
+    /**
+     * @dev Throws if the sender is not the owner.
+     */
+    function _checkOwner() internal view virtual {
+        require(owner() == _msgSender(), "Ownable: caller is not the owner");
+    }
+
+    /**
+     * @dev Leaves the contract without owner. It will not be possible to call
+     * `onlyOwner` functions anymore. Can only be called by the current owner.
+     *
+     * NOTE: Renouncing ownership will leave the contract without an owner,
+     * thereby removing any functionality that is only available to the owner.
+     */
+    function renounceOwnership() public virtual onlyOwner {
+        _transferOwnership(address(0));
+    }
+
+    /**
+     * @dev Transfers ownership of the contract to a new account (`newOwner`).
+     * Can only be called by the current owner.
+     */
+    function transferOwnership(address newOwner) public virtual onlyOwner {
+        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        _transferOwnership(newOwner);
+    }
+
+    /**
+     * @dev Transfers ownership of the contract to a new account (`newOwner`).
+     * Internal function without access restriction.
+     */
+    function _transferOwnership(address newOwner) internal virtual {
+        address oldOwner = _owner;
+        _owner = newOwner;
+        emit OwnershipTransferred(oldOwner, newOwner);
+    }
+}
+
+
+// File @openzeppelin/contracts/security/ReentrancyGuard.sol@v4.7.0
+
+// OpenZeppelin Contracts v4.4.1 (security/ReentrancyGuard.sol)
+
+pragma solidity ^0.8.0;
+
+/**
+ * @dev Contract module that helps prevent reentrant calls to a function.
+ *
+ * Inheriting from `ReentrancyGuard` will make the {nonReentrant} modifier
+ * available, which can be applied to functions to make sure there are no nested
+ * (reentrant) calls to them.
+ *
+ * Note that because there is a single `nonReentrant` guard, functions marked as
+ * `nonReentrant` may not call one another. This can be worked around by making
+ * those functions `private`, and then adding `external` `nonReentrant` entry
+ * points to them.
+ *
+ * TIP: If you would like to learn more about reentrancy and alternative ways
+ * to protect against it, check out our blog post
+ * https://blog.openzeppelin.com/reentrancy-after-istanbul/[Reentrancy After Istanbul].
+ */
+abstract contract ReentrancyGuard {
+    // Booleans are more expensive than uint256 or any type that takes up a full
+    // word because each write operation emits an extra SLOAD to first read the
+    // slot's contents, replace the bits taken up by the boolean, and then write
+    // back. This is the compiler's defense against contract upgrades and
+    // pointer aliasing, and it cannot be disabled.
+
+    // The values being non-zero value makes deployment a bit more expensive,
+    // but in exchange the refund on every call to nonReentrant will be lower in
+    // amount. Since refunds are capped to a percentage of the total
+    // transaction's gas, it is best to keep them low in cases like this one, to
+    // increase the likelihood of the full refund coming into effect.
+    uint256 private constant _NOT_ENTERED = 1;
+    uint256 private constant _ENTERED = 2;
+
+    uint256 private _status;
+
+    constructor() {
+        _status = _NOT_ENTERED;
+    }
+
+    /**
+     * @dev Prevents a contract from calling itself, directly or indirectly.
+     * Calling a `nonReentrant` function from another `nonReentrant`
+     * function is not supported. It is possible to prevent this from happening
+     * by making the `nonReentrant` function external, and making it call a
+     * `private` function that does the actual work.
+     */
+    modifier nonReentrant() {
+        // On the first call to nonReentrant, _notEntered will be true
+        require(_status != _ENTERED, "ReentrancyGuard: reentrant call");
+
+        // Any calls to nonReentrant after this point will fail
+        _status = _ENTERED;
+
+        _;
+
+        // By storing the original value once again, a refund is triggered (see
+        // https://eips.ethereum.org/EIPS/eip-2200)
+        _status = _NOT_ENTERED;
+    }
+}
+
+
+// File @openzeppelin/contracts/utils/introspection/IERC165.sol@v4.7.0
+
 // OpenZeppelin Contracts v4.4.1 (utils/introspection/IERC165.sol)
 
 pragma solidity ^0.8.0;
@@ -27,14 +206,11 @@ interface IERC165 {
 }
 
 
+// File @openzeppelin/contracts/token/ERC721/IERC721.sol@v4.7.0
 
-            
-////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
 // OpenZeppelin Contracts (last updated v4.7.0) (token/ERC721/IERC721.sol)
 
 pragma solidity ^0.8.0;
-
-////import "../../utils/introspection/IERC165.sol";
 
 /**
  * @dev Required interface of an ERC721 compliant contract.
@@ -174,149 +350,66 @@ interface IERC721 is IERC165 {
 }
 
 
+// File @openzeppelin/contracts/token/ERC721/IERC721Receiver.sol@v4.7.0
 
-            
-////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
-// OpenZeppelin Contracts v4.4.1 (utils/introspection/ERC165.sol)
-
-pragma solidity ^0.8.0;
-
-////import "./IERC165.sol";
-
-/**
- * @dev Implementation of the {IERC165} interface.
- *
- * Contracts that want to implement ERC165 should inherit from this contract and override {supportsInterface} to check
- * for the additional interface id that will be supported. For example:
- *
- * ```solidity
- * function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
- *     return interfaceId == type(MyInterface).interfaceId || super.supportsInterface(interfaceId);
- * }
- * ```
- *
- * Alternatively, {ERC165Storage} provides an easier to use but more expensive implementation.
- */
-abstract contract ERC165 is IERC165 {
-    /**
-     * @dev See {IERC165-supportsInterface}.
-     */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        return interfaceId == type(IERC165).interfaceId;
-    }
-}
-
-
-
-            
-////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
-// OpenZeppelin Contracts (last updated v4.7.0) (utils/Strings.sol)
+// OpenZeppelin Contracts (last updated v4.6.0) (token/ERC721/IERC721Receiver.sol)
 
 pragma solidity ^0.8.0;
 
 /**
- * @dev String operations.
+ * @title ERC721 token receiver interface
+ * @dev Interface for any contract that wants to support safeTransfers
+ * from ERC721 asset contracts.
  */
-library Strings {
-    bytes16 private constant _HEX_SYMBOLS = "0123456789abcdef";
-    uint8 private constant _ADDRESS_LENGTH = 20;
-
+interface IERC721Receiver {
     /**
-     * @dev Converts a `uint256` to its ASCII `string` decimal representation.
+     * @dev Whenever an {IERC721} `tokenId` token is transferred to this contract via {IERC721-safeTransferFrom}
+     * by `operator` from `from`, this function is called.
+     *
+     * It must return its Solidity selector to confirm the token transfer.
+     * If any other value is returned or the interface is not implemented by the recipient, the transfer will be reverted.
+     *
+     * The selector can be obtained in Solidity with `IERC721Receiver.onERC721Received.selector`.
      */
-    function toString(uint256 value) internal pure returns (string memory) {
-        // Inspired by OraclizeAPI's implementation - MIT licence
-        // https://github.com/oraclize/ethereum-api/blob/b42146b063c7d6ee1358846c198246239e9360e8/oraclizeAPI_0.4.25.sol
-
-        if (value == 0) {
-            return "0";
-        }
-        uint256 temp = value;
-        uint256 digits;
-        while (temp != 0) {
-            digits++;
-            temp /= 10;
-        }
-        bytes memory buffer = new bytes(digits);
-        while (value != 0) {
-            digits -= 1;
-            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
-            value /= 10;
-        }
-        return string(buffer);
-    }
-
-    /**
-     * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation.
-     */
-    function toHexString(uint256 value) internal pure returns (string memory) {
-        if (value == 0) {
-            return "0x00";
-        }
-        uint256 temp = value;
-        uint256 length = 0;
-        while (temp != 0) {
-            length++;
-            temp >>= 8;
-        }
-        return toHexString(value, length);
-    }
-
-    /**
-     * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation with fixed length.
-     */
-    function toHexString(uint256 value, uint256 length) internal pure returns (string memory) {
-        bytes memory buffer = new bytes(2 * length + 2);
-        buffer[0] = "0";
-        buffer[1] = "x";
-        for (uint256 i = 2 * length + 1; i > 1; --i) {
-            buffer[i] = _HEX_SYMBOLS[value & 0xf];
-            value >>= 4;
-        }
-        require(value == 0, "Strings: hex length insufficient");
-        return string(buffer);
-    }
-
-    /**
-     * @dev Converts an `address` with fixed length of 20 bytes to its not checksummed ASCII `string` hexadecimal representation.
-     */
-    function toHexString(address addr) internal pure returns (string memory) {
-        return toHexString(uint256(uint160(addr)), _ADDRESS_LENGTH);
-    }
+    function onERC721Received(
+        address operator,
+        address from,
+        uint256 tokenId,
+        bytes calldata data
+    ) external returns (bytes4);
 }
 
 
+// File @openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol@v4.7.0
 
-            
-////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
-// OpenZeppelin Contracts v4.4.1 (utils/Context.sol)
+// OpenZeppelin Contracts v4.4.1 (token/ERC721/extensions/IERC721Metadata.sol)
 
 pragma solidity ^0.8.0;
 
 /**
- * @dev Provides information about the current execution context, including the
- * sender of the transaction and its data. While these are generally available
- * via msg.sender and msg.data, they should not be accessed in such a direct
- * manner, since when dealing with meta-transactions the account sending and
- * paying for execution may not be the actual sender (as far as an application
- * is concerned).
- *
- * This contract is only required for intermediate, library-like contracts.
+ * @title ERC-721 Non-Fungible Token Standard, optional metadata extension
+ * @dev See https://eips.ethereum.org/EIPS/eip-721
  */
-abstract contract Context {
-    function _msgSender() internal view virtual returns (address) {
-        return msg.sender;
-    }
+interface IERC721Metadata is IERC721 {
+    /**
+     * @dev Returns the token collection name.
+     */
+    function name() external view returns (string memory);
 
-    function _msgData() internal view virtual returns (bytes calldata) {
-        return msg.data;
-    }
+    /**
+     * @dev Returns the token collection symbol.
+     */
+    function symbol() external view returns (string memory);
+
+    /**
+     * @dev Returns the Uniform Resource Identifier (URI) for `tokenId` token.
+     */
+    function tokenURI(uint256 tokenId) external view returns (string memory);
 }
 
 
+// File @openzeppelin/contracts/utils/Address.sol@v4.7.0
 
-            
-////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
 // OpenZeppelin Contracts (last updated v4.7.0) (utils/Address.sol)
 
 pragma solidity ^0.8.1;
@@ -328,7 +421,7 @@ library Address {
     /**
      * @dev Returns true if `account` is a contract.
      *
-     * [////IMPORTANT]
+     * [IMPORTANT]
      * ====
      * It is unsafe to assume that an address for which this function returns
      * false is an externally-owned account (EOA) and not a contract.
@@ -370,7 +463,7 @@ library Address {
      *
      * https://diligence.consensys.net/posts/2019/09/stop-using-soliditys-transfer-now/[Learn more].
      *
-     * ////IMPORTANT: because control is transferred to `recipient`, care must be
+     * IMPORTANT: because control is transferred to `recipient`, care must be
      * taken to not create reentrancy vulnerabilities. Consider using
      * {ReentrancyGuard} or the
      * https://solidity.readthedocs.io/en/v0.5.11/security-considerations.html#use-the-checks-effects-interactions-pattern[checks-effects-interactions pattern].
@@ -540,201 +633,125 @@ library Address {
 }
 
 
+// File @openzeppelin/contracts/utils/Strings.sol@v4.7.0
 
-            
-////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
-// OpenZeppelin Contracts v4.4.1 (token/ERC721/extensions/IERC721Metadata.sol)
-
-pragma solidity ^0.8.0;
-
-////import "../IERC721.sol";
-
-/**
- * @title ERC-721 Non-Fungible Token Standard, optional metadata extension
- * @dev See https://eips.ethereum.org/EIPS/eip-721
- */
-interface IERC721Metadata is IERC721 {
-    /**
-     * @dev Returns the token collection name.
-     */
-    function name() external view returns (string memory);
-
-    /**
-     * @dev Returns the token collection symbol.
-     */
-    function symbol() external view returns (string memory);
-
-    /**
-     * @dev Returns the Uniform Resource Identifier (URI) for `tokenId` token.
-     */
-    function tokenURI(uint256 tokenId) external view returns (string memory);
-}
-
-
-
-            
-////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
-// OpenZeppelin Contracts (last updated v4.6.0) (token/ERC721/IERC721Receiver.sol)
+// OpenZeppelin Contracts (last updated v4.7.0) (utils/Strings.sol)
 
 pragma solidity ^0.8.0;
 
 /**
- * @title ERC721 token receiver interface
- * @dev Interface for any contract that wants to support safeTransfers
- * from ERC721 asset contracts.
+ * @dev String operations.
  */
-interface IERC721Receiver {
+library Strings {
+    bytes16 private constant _HEX_SYMBOLS = "0123456789abcdef";
+    uint8 private constant _ADDRESS_LENGTH = 20;
+
     /**
-     * @dev Whenever an {IERC721} `tokenId` token is transferred to this contract via {IERC721-safeTransferFrom}
-     * by `operator` from `from`, this function is called.
-     *
-     * It must return its Solidity selector to confirm the token transfer.
-     * If any other value is returned or the interface is not implemented by the recipient, the transfer will be reverted.
-     *
-     * The selector can be obtained in Solidity with `IERC721Receiver.onERC721Received.selector`.
+     * @dev Converts a `uint256` to its ASCII `string` decimal representation.
      */
-    function onERC721Received(
-        address operator,
-        address from,
-        uint256 tokenId,
-        bytes calldata data
-    ) external returns (bytes4);
+    function toString(uint256 value) internal pure returns (string memory) {
+        // Inspired by OraclizeAPI's implementation - MIT licence
+        // https://github.com/oraclize/ethereum-api/blob/b42146b063c7d6ee1358846c198246239e9360e8/oraclizeAPI_0.4.25.sol
+
+        if (value == 0) {
+            return "0";
+        }
+        uint256 temp = value;
+        uint256 digits;
+        while (temp != 0) {
+            digits++;
+            temp /= 10;
+        }
+        bytes memory buffer = new bytes(digits);
+        while (value != 0) {
+            digits -= 1;
+            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
+            value /= 10;
+        }
+        return string(buffer);
+    }
+
+    /**
+     * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation.
+     */
+    function toHexString(uint256 value) internal pure returns (string memory) {
+        if (value == 0) {
+            return "0x00";
+        }
+        uint256 temp = value;
+        uint256 length = 0;
+        while (temp != 0) {
+            length++;
+            temp >>= 8;
+        }
+        return toHexString(value, length);
+    }
+
+    /**
+     * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation with fixed length.
+     */
+    function toHexString(uint256 value, uint256 length) internal pure returns (string memory) {
+        bytes memory buffer = new bytes(2 * length + 2);
+        buffer[0] = "0";
+        buffer[1] = "x";
+        for (uint256 i = 2 * length + 1; i > 1; --i) {
+            buffer[i] = _HEX_SYMBOLS[value & 0xf];
+            value >>= 4;
+        }
+        require(value == 0, "Strings: hex length insufficient");
+        return string(buffer);
+    }
+
+    /**
+     * @dev Converts an `address` with fixed length of 20 bytes to its not checksummed ASCII `string` hexadecimal representation.
+     */
+    function toHexString(address addr) internal pure returns (string memory) {
+        return toHexString(uint256(uint160(addr)), _ADDRESS_LENGTH);
+    }
 }
 
 
+// File @openzeppelin/contracts/utils/introspection/ERC165.sol@v4.7.0
 
-            
-////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
-// OpenZeppelin Contracts (last updated v4.6.0) (token/ERC20/IERC20.sol)
+// OpenZeppelin Contracts v4.4.1 (utils/introspection/ERC165.sol)
 
 pragma solidity ^0.8.0;
 
 /**
- * @dev Interface of the ERC20 standard as defined in the EIP.
+ * @dev Implementation of the {IERC165} interface.
+ *
+ * Contracts that want to implement ERC165 should inherit from this contract and override {supportsInterface} to check
+ * for the additional interface id that will be supported. For example:
+ *
+ * ```solidity
+ * function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+ *     return interfaceId == type(MyInterface).interfaceId || super.supportsInterface(interfaceId);
+ * }
+ * ```
+ *
+ * Alternatively, {ERC165Storage} provides an easier to use but more expensive implementation.
  */
-interface IERC20 {
+abstract contract ERC165 is IERC165 {
     /**
-     * @dev Emitted when `value` tokens are moved from one account (`from`) to
-     * another (`to`).
-     *
-     * Note that `value` may be zero.
+     * @dev See {IERC165-supportsInterface}.
      */
-    event Transfer(address indexed from, address indexed to, uint256 value);
-
-    /**
-     * @dev Emitted when the allowance of a `spender` for an `owner` is set by
-     * a call to {approve}. `value` is the new allowance.
-     */
-    event Approval(address indexed owner, address indexed spender, uint256 value);
-
-    /**
-     * @dev Returns the amount of tokens in existence.
-     */
-    function totalSupply() external view returns (uint256);
-
-    /**
-     * @dev Returns the amount of tokens owned by `account`.
-     */
-    function balanceOf(address account) external view returns (uint256);
-
-    /**
-     * @dev Moves `amount` tokens from the caller's account to `to`.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * Emits a {Transfer} event.
-     */
-    function transfer(address to, uint256 amount) external returns (bool);
-
-    /**
-     * @dev Returns the remaining number of tokens that `spender` will be
-     * allowed to spend on behalf of `owner` through {transferFrom}. This is
-     * zero by default.
-     *
-     * This value changes when {approve} or {transferFrom} are called.
-     */
-    function allowance(address owner, address spender) external view returns (uint256);
-
-    /**
-     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * ////IMPORTANT: Beware that changing an allowance with this method brings the risk
-     * that someone may use both the old and the new allowance by unfortunate
-     * transaction ordering. One possible solution to mitigate this race
-     * condition is to first reduce the spender's allowance to 0 and set the
-     * desired value afterwards:
-     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
-     *
-     * Emits an {Approval} event.
-     */
-    function approve(address spender, uint256 amount) external returns (bool);
-
-    /**
-     * @dev Moves `amount` tokens from `from` to `to` using the
-     * allowance mechanism. `amount` is then deducted from the caller's
-     * allowance.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * Emits a {Transfer} event.
-     */
-    function transferFrom(
-        address from,
-        address to,
-        uint256 amount
-    ) external returns (bool);
+    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+        return interfaceId == type(IERC165).interfaceId;
+    }
 }
 
 
+// File @openzeppelin/contracts/token/ERC721/ERC721.sol@v4.7.0
 
-            
-////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
-// OpenZeppelin Contracts (last updated v4.5.0) (token/ERC721/extensions/IERC721Enumerable.sol)
-
-pragma solidity ^0.8.0;
-
-////import "../IERC721.sol";
-
-/**
- * @title ERC-721 Non-Fungible Token Standard, optional enumeration extension
- * @dev See https://eips.ethereum.org/EIPS/eip-721
- */
-interface IERC721Enumerable is IERC721 {
-    /**
-     * @dev Returns the total amount of tokens stored by the contract.
-     */
-    function totalSupply() external view returns (uint256);
-
-    /**
-     * @dev Returns a token ID owned by `owner` at a given `index` of its token list.
-     * Use along with {balanceOf} to enumerate all of ``owner``'s tokens.
-     */
-    function tokenOfOwnerByIndex(address owner, uint256 index) external view returns (uint256);
-
-    /**
-     * @dev Returns a token ID at a given `index` of all the tokens stored by the contract.
-     * Use along with {totalSupply} to enumerate all tokens.
-     */
-    function tokenByIndex(uint256 index) external view returns (uint256);
-}
-
-
-
-            
-////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
 // OpenZeppelin Contracts (last updated v4.7.0) (token/ERC721/ERC721.sol)
 
 pragma solidity ^0.8.0;
 
-////import "./IERC721.sol";
-////import "./IERC721Receiver.sol";
-////import "./extensions/IERC721Metadata.sol";
-////import "../../utils/Address.sol";
-////import "../../utils/Context.sol";
-////import "../../utils/Strings.sol";
-////import "../../utils/introspection/ERC165.sol";
+
+
+
+
+
 
 /**
  * @dev Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard, including
@@ -1179,161 +1196,123 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
 }
 
 
+// File @openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol@v4.7.0
 
-            
-////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
-// OpenZeppelin Contracts v4.4.1 (security/ReentrancyGuard.sol)
+// OpenZeppelin Contracts (last updated v4.5.0) (token/ERC721/extensions/IERC721Enumerable.sol)
 
 pragma solidity ^0.8.0;
 
 /**
- * @dev Contract module that helps prevent reentrant calls to a function.
- *
- * Inheriting from `ReentrancyGuard` will make the {nonReentrant} modifier
- * available, which can be applied to functions to make sure there are no nested
- * (reentrant) calls to them.
- *
- * Note that because there is a single `nonReentrant` guard, functions marked as
- * `nonReentrant` may not call one another. This can be worked around by making
- * those functions `private`, and then adding `external` `nonReentrant` entry
- * points to them.
- *
- * TIP: If you would like to learn more about reentrancy and alternative ways
- * to protect against it, check out our blog post
- * https://blog.openzeppelin.com/reentrancy-after-istanbul/[Reentrancy After Istanbul].
+ * @title ERC-721 Non-Fungible Token Standard, optional enumeration extension
+ * @dev See https://eips.ethereum.org/EIPS/eip-721
  */
-abstract contract ReentrancyGuard {
-    // Booleans are more expensive than uint256 or any type that takes up a full
-    // word because each write operation emits an extra SLOAD to first read the
-    // slot's contents, replace the bits taken up by the boolean, and then write
-    // back. This is the compiler's defense against contract upgrades and
-    // pointer aliasing, and it cannot be disabled.
-
-    // The values being non-zero value makes deployment a bit more expensive,
-    // but in exchange the refund on every call to nonReentrant will be lower in
-    // amount. Since refunds are capped to a percentage of the total
-    // transaction's gas, it is best to keep them low in cases like this one, to
-    // increase the likelihood of the full refund coming into effect.
-    uint256 private constant _NOT_ENTERED = 1;
-    uint256 private constant _ENTERED = 2;
-
-    uint256 private _status;
-
-    constructor() {
-        _status = _NOT_ENTERED;
-    }
+interface IERC721Enumerable is IERC721 {
+    /**
+     * @dev Returns the total amount of tokens stored by the contract.
+     */
+    function totalSupply() external view returns (uint256);
 
     /**
-     * @dev Prevents a contract from calling itself, directly or indirectly.
-     * Calling a `nonReentrant` function from another `nonReentrant`
-     * function is not supported. It is possible to prevent this from happening
-     * by making the `nonReentrant` function external, and making it call a
-     * `private` function that does the actual work.
+     * @dev Returns a token ID owned by `owner` at a given `index` of its token list.
+     * Use along with {balanceOf} to enumerate all of ``owner``'s tokens.
      */
-    modifier nonReentrant() {
-        // On the first call to nonReentrant, _notEntered will be true
-        require(_status != _ENTERED, "ReentrancyGuard: reentrant call");
+    function tokenOfOwnerByIndex(address owner, uint256 index) external view returns (uint256);
 
-        // Any calls to nonReentrant after this point will fail
-        _status = _ENTERED;
-
-        _;
-
-        // By storing the original value once again, a refund is triggered (see
-        // https://eips.ethereum.org/EIPS/eip-2200)
-        _status = _NOT_ENTERED;
-    }
+    /**
+     * @dev Returns a token ID at a given `index` of all the tokens stored by the contract.
+     * Use along with {totalSupply} to enumerate all tokens.
+     */
+    function tokenByIndex(uint256 index) external view returns (uint256);
 }
 
 
+// File @openzeppelin/contracts/token/ERC20/IERC20.sol@v4.7.0
 
-            
-////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
-// OpenZeppelin Contracts (last updated v4.7.0) (access/Ownable.sol)
+// OpenZeppelin Contracts (last updated v4.6.0) (token/ERC20/IERC20.sol)
 
 pragma solidity ^0.8.0;
 
-////import "../utils/Context.sol";
-
 /**
- * @dev Contract module which provides a basic access control mechanism, where
- * there is an account (an owner) that can be granted exclusive access to
- * specific functions.
- *
- * By default, the owner account will be the one that deploys the contract. This
- * can later be changed with {transferOwnership}.
- *
- * This module is used through inheritance. It will make available the modifier
- * `onlyOwner`, which can be applied to your functions to restrict their use to
- * the owner.
+ * @dev Interface of the ERC20 standard as defined in the EIP.
  */
-abstract contract Ownable is Context {
-    address private _owner;
-
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-
+interface IERC20 {
     /**
-     * @dev Initializes the contract setting the deployer as the initial owner.
-     */
-    constructor() {
-        _transferOwnership(_msgSender());
-    }
-
-    /**
-     * @dev Throws if called by any account other than the owner.
-     */
-    modifier onlyOwner() {
-        _checkOwner();
-        _;
-    }
-
-    /**
-     * @dev Returns the address of the current owner.
-     */
-    function owner() public view virtual returns (address) {
-        return _owner;
-    }
-
-    /**
-     * @dev Throws if the sender is not the owner.
-     */
-    function _checkOwner() internal view virtual {
-        require(owner() == _msgSender(), "Ownable: caller is not the owner");
-    }
-
-    /**
-     * @dev Leaves the contract without owner. It will not be possible to call
-     * `onlyOwner` functions anymore. Can only be called by the current owner.
+     * @dev Emitted when `value` tokens are moved from one account (`from`) to
+     * another (`to`).
      *
-     * NOTE: Renouncing ownership will leave the contract without an owner,
-     * thereby removing any functionality that is only available to the owner.
+     * Note that `value` may be zero.
      */
-    function renounceOwnership() public virtual onlyOwner {
-        _transferOwnership(address(0));
-    }
+    event Transfer(address indexed from, address indexed to, uint256 value);
 
     /**
-     * @dev Transfers ownership of the contract to a new account (`newOwner`).
-     * Can only be called by the current owner.
+     * @dev Emitted when the allowance of a `spender` for an `owner` is set by
+     * a call to {approve}. `value` is the new allowance.
      */
-    function transferOwnership(address newOwner) public virtual onlyOwner {
-        require(newOwner != address(0), "Ownable: new owner is the zero address");
-        _transferOwnership(newOwner);
-    }
+    event Approval(address indexed owner, address indexed spender, uint256 value);
 
     /**
-     * @dev Transfers ownership of the contract to a new account (`newOwner`).
-     * Internal function without access restriction.
+     * @dev Returns the amount of tokens in existence.
      */
-    function _transferOwnership(address newOwner) internal virtual {
-        address oldOwner = _owner;
-        _owner = newOwner;
-        emit OwnershipTransferred(oldOwner, newOwner);
-    }
+    function totalSupply() external view returns (uint256);
+
+    /**
+     * @dev Returns the amount of tokens owned by `account`.
+     */
+    function balanceOf(address account) external view returns (uint256);
+
+    /**
+     * @dev Moves `amount` tokens from the caller's account to `to`.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * Emits a {Transfer} event.
+     */
+    function transfer(address to, uint256 amount) external returns (bool);
+
+    /**
+     * @dev Returns the remaining number of tokens that `spender` will be
+     * allowed to spend on behalf of `owner` through {transferFrom}. This is
+     * zero by default.
+     *
+     * This value changes when {approve} or {transferFrom} are called.
+     */
+    function allowance(address owner, address spender) external view returns (uint256);
+
+    /**
+     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * IMPORTANT: Beware that changing an allowance with this method brings the risk
+     * that someone may use both the old and the new allowance by unfortunate
+     * transaction ordering. One possible solution to mitigate this race
+     * condition is to first reduce the spender's allowance to 0 and set the
+     * desired value afterwards:
+     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+     *
+     * Emits an {Approval} event.
+     */
+    function approve(address spender, uint256 amount) external returns (bool);
+
+    /**
+     * @dev Moves `amount` tokens from `from` to `to` using the
+     * allowance mechanism. `amount` is then deducted from the caller's
+     * allowance.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * Emits a {Transfer} event.
+     */
+    function transferFrom(
+        address from,
+        address to,
+        uint256 amount
+    ) external returns (bool);
 }
 
 
-////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
+// File contracts/SysPunksMarket.sol
+
 
 // PunkLabs -> bringing you SysPunks & more
 // MMMMMMMMMMMMMMMMMMMMWWNNNNNNNNNNNNNNNNNNNNNNNNNNNNNWWMMMMMMMMMMMMMMMM
@@ -1370,11 +1349,9 @@ abstract contract Ownable is Context {
 
 pragma solidity ^0.8.1;
 
-////import "@openzeppelin/contracts/access/Ownable.sol";
-////import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-////import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-////import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
-////import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+
+
 
 abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
     // Mapping from owner to list of owned token IDs
@@ -1392,16 +1369,32 @@ abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC721) returns (bool) {
-        return interfaceId == type(IERC721Enumerable).interfaceId
-            || super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(IERC165, ERC721)
+        returns (bool)
+    {
+        return
+            interfaceId == type(IERC721Enumerable).interfaceId ||
+            super.supportsInterface(interfaceId);
     }
 
     /**
      * @dev See {IERC721Enumerable-tokenOfOwnerByIndex}.
      */
-    function tokenOfOwnerByIndex(address owner, uint256 index) public view virtual override returns (uint256) {
-        require(index < balanceOf(owner), "ERC721Enumerable: owner index out of bounds");
+    function tokenOfOwnerByIndex(address owner, uint256 index)
+        public
+        view
+        virtual
+        override
+        returns (uint256)
+    {
+        require(
+            index < balanceOf(owner),
+            "ERC721Enumerable: owner index out of bounds"
+        );
         return _ownedTokens[owner][index];
     }
 
@@ -1415,8 +1408,17 @@ abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
     /**
      * @dev See {IERC721Enumerable-tokenByIndex}.
      */
-    function tokenByIndex(uint256 index) public view virtual override returns (uint256) {
-        require(index < ERC721Enumerable.totalSupply(), "ERC721Enumerable: global index out of bounds");
+    function tokenByIndex(uint256 index)
+        public
+        view
+        virtual
+        override
+        returns (uint256)
+    {
+        require(
+            index < ERC721Enumerable.totalSupply(),
+            "ERC721Enumerable: global index out of bounds"
+        );
         return _allTokens[index];
     }
 
@@ -1435,7 +1437,11 @@ abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
      *
      * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
      */
-    function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal virtual override {
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal virtual override {
         super._beforeTokenTransfer(from, to, tokenId);
 
         if (from == address(0)) {
@@ -1478,7 +1484,9 @@ abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
      * @param from address representing the previous owner of the given token ID
      * @param tokenId uint256 ID of the token to be removed from the tokens list of the given address
      */
-    function _removeTokenFromOwnerEnumeration(address from, uint256 tokenId) private {
+    function _removeTokenFromOwnerEnumeration(address from, uint256 tokenId)
+        private
+    {
         // To prevent a gap in from's tokens array, we store the last token in the index of the token to delete, and
         // then delete the last slot (swap and pop).
 
@@ -1525,13 +1533,12 @@ abstract contract ERC721Enumerable is ERC721, IERC721Enumerable {
 }
 
 contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
-
     struct Offer {
         bool isForSale;
         uint256 punkIndex;
         address seller;
-        uint256 minValue;          // in ether
-        address onlySellTo;     // specify to sell only to a specific person
+        uint256 minValue; // in ether
+        address onlySellTo; // specify to sell only to a specific person
     }
 
     struct Bid {
@@ -1543,69 +1550,126 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
 
     mapping(uint256 => uint256) private assignOrders;
 
-    mapping (uint256 => Offer) public punksOfferedForSale;
-    mapping (uint256 => Bid) public punkBids;
-    mapping (address => uint256) public pendingWithdrawals;
+    mapping(uint256 => Offer) public punksOfferedForSale;
+    mapping(uint256 => Bid) public punkBids;
+    mapping(address => uint256) public pendingWithdrawals;
 
-    string public baseURI = "https://api.syspunks.org";
-    string public imageHash = "ac39af4793119ee46bbff351d8cb6b5f23da60222126add4268e261199a2921b";
+    string public baseURI = "https://api.syspunks.org/api/punk/";
+    string public imageHash =
+        "ac39af4793119ee46bbff351d8cb6b5f23da60222126add4268e261199a2921b";
+    string public bgHash =
+        "82f1827e0cd3cbf5502acfbd47afe025d3b628518810d2c2836334892fb4643f";
     uint256 public punksRemainingToAssign = 0;
+    IERC20 public luxy = IERC20(0x6b7a87899490EcE95443e979cA9485CBE7E71522);
+    uint256 public constant MINT_START_TIME = 1657735200;
 
-    modifier onlyTradablePunk (address from, uint256 tokenId) {
+    modifier onlyTradablePunk(address from, uint256 tokenId) {
         require(tokenId < 10000, "Out of tokenId");
-        require(ownerOf(tokenId) == from, "ERC721: transfer of token that is not own");
+        require(
+            ownerOf(tokenId) == from,
+            "ERC721: transfer of token that is not own"
+        );
         _;
     }
 
     event Assign(address indexed to, uint256 punkIndex);
-    event PunkTransfer(address indexed from, address indexed to, uint256 punkIndex);
-    event PunkOffered(uint256 indexed punkIndex, uint256 minValue, address indexed toAddress);
-    event PunkBidEntered(uint256 indexed punkIndex, uint256 value, address indexed fromAddress);
-    event PunkBidWithdrawn(uint256 indexed punkIndex, uint256 value, address indexed fromAddress);
-    event PunkBought(uint256 indexed punkIndex, uint256 value, address indexed fromAddress, address indexed toAddress);
+    event PunkTransfer(
+        address indexed from,
+        address indexed to,
+        uint256 punkIndex
+    );
+    event PunkOffered(
+        uint256 indexed punkIndex,
+        uint256 minValue,
+        address indexed toAddress
+    );
+    event PunkBidEntered(
+        uint256 indexed punkIndex,
+        uint256 value,
+        address indexed fromAddress
+    );
+    event PunkBidWithdrawn(
+        uint256 indexed punkIndex,
+        uint256 value,
+        address indexed fromAddress
+    );
+    event PunkBought(
+        uint256 indexed punkIndex,
+        uint256 value,
+        address indexed fromAddress,
+        address indexed toAddress
+    );
     event PunkNoLongerForSale(uint256 indexed punkIndex);
 
-    constructor () ERC721("SysPunks", "\xC7\xB7\xC6\xB2\xCE\xB7\xCF\x8F\xCF\x9B") {
+    constructor()
+        ERC721("SysPunks", "\xC7\xB7\xC6\xB2\xCE\xB7\xCF\x8F\xCF\x9B")
+    {
         punksRemainingToAssign = 10000;
     }
 
     function _baseURI() internal view override returns (string memory) {
         return baseURI;
     }
-    
+
     function setBaseURI(string memory uri) public onlyOwner {
         baseURI = uri;
     }
 
+    function setLuxy(IERC20 luxy_) public onlyOwner {
+        luxy = luxy_;
+    }
+
+    // luxy-based mint price
     function checkMintPrice(address addr) public view returns (uint256) {
-        uint256 luxyHeld = IERC20(0xf3660dF79Fb9d0C2033775194310719733aA3601).balanceOf(addr);
-        if (luxyHeld >= 50000 * 10 ** 18) {
-            // return 50 ether;
-            return 5000 wei;
-        } else if (luxyHeld >= 20000 * 10 ** 18) {
-            // return 100 ether;
-            return 10000 wei;
-        } else if (luxyHeld >= 5000 * 10 ** 18) {
-            // return 200 ether;
-            return 20000 wei;
-        } else if (luxyHeld >= 1000 * 10 ** 18) {
-            // return 300 ether;
-            return 30000 wei;
+        uint256 luxyHeld = luxy.balanceOf(addr);
+        if (luxyHeld >= 50000 ether) {
+            return 10 ether;
+        } else if (luxyHeld >= 20000 ether) {
+            return 20 ether;
+        } else if (luxyHeld >= 5000 ether) {
+            return 30 ether;
+        } else if (luxyHeld >= 1000 ether) {
+            return 40 ether;
         } else {
-            // return 350 ether;
-            return 35000 wei;
+            return 50 ether;
         }
     }
 
-    function mint() payable public {
+    function mint() public payable {
+        require(block.timestamp >= MINT_START_TIME, "Drop hasnt started yet");
         require(punksRemainingToAssign > 0, "No punks remaining");
-        require(msg.value >= checkMintPrice(msg.sender), "Need to pay more than mint price");
+        require(msg.value >= checkMintPrice(msg.sender), "Invalid Amount");
         uint256 randIndex = _random() % punksRemainingToAssign;
-        uint256 punkIndex = _fillAssignOrder(--punksRemainingToAssign, randIndex);
+        uint256 punkIndex = _fillAssignOrder(
+            --punksRemainingToAssign,
+            randIndex
+        );
         _safeMint(_msgSender(), punkIndex);
-        (bool success,) = owner().call{value: msg.value}("");
+        (bool success, ) = owner().call{value: msg.value}("");
         require(success);
         emit Assign(_msgSender(), punkIndex);
+    }
+
+    function mintInBatch(uint256 num) public payable {
+        require(block.timestamp >= MINT_START_TIME, "Drop hasnt started yet");
+        require(num > 0, "Need to mint at least 1");
+        require(punksRemainingToAssign >= num, "No punks remaining");
+        require(num <= 10, "Exceeds max batch per mint");
+        require(
+            msg.value >= (checkMintPrice(msg.sender) * num),
+            "Invalid Amount"
+        );
+        (bool success, ) = owner().call{value: msg.value}("");
+        require(success, "Transfer failed");
+        for (uint256 i; i < num; i++) {
+            uint256 randIndex = _random() % punksRemainingToAssign;
+            uint256 punkIndex = _fillAssignOrder(
+                --punksRemainingToAssign,
+                randIndex
+            );
+            _safeMint(_msgSender(), punkIndex);
+            emit Assign(_msgSender(), punkIndex);
+        }
     }
 
     function transferPunk(address to, uint256 tokenId) public {
@@ -1618,21 +1682,43 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         _punkNoLongerForSale(_msgSender(), tokenId);
     }
 
-    function offerPunkForSale(uint256 tokenId, uint256 minSalePriceInWei) public onlyTradablePunk(_msgSender(), tokenId) {
-        punksOfferedForSale[tokenId] = Offer(true, tokenId, _msgSender(), minSalePriceInWei, address(0));
+    function offerPunkForSale(uint256 tokenId, uint256 minSalePriceInWei)
+        public
+        onlyTradablePunk(_msgSender(), tokenId)
+    {
+        punksOfferedForSale[tokenId] = Offer(
+            true,
+            tokenId,
+            _msgSender(),
+            minSalePriceInWei,
+            address(0)
+        );
         emit PunkOffered(tokenId, minSalePriceInWei, address(0));
     }
 
-    function offerPunkForSaleToAddress(uint256 tokenId, uint256 minSalePriceInWei, address toAddress) public onlyTradablePunk(_msgSender(), tokenId) {
-        punksOfferedForSale[tokenId] = Offer(true, tokenId, _msgSender(), minSalePriceInWei, toAddress);
+    function offerPunkForSaleToAddress(
+        uint256 tokenId,
+        uint256 minSalePriceInWei,
+        address toAddress
+    ) public onlyTradablePunk(_msgSender(), tokenId) {
+        punksOfferedForSale[tokenId] = Offer(
+            true,
+            tokenId,
+            _msgSender(),
+            minSalePriceInWei,
+            toAddress
+        );
         emit PunkOffered(tokenId, minSalePriceInWei, toAddress);
     }
 
-    function buyPunk(uint256 tokenId) payable public {
+    function buyPunk(uint256 tokenId) public payable {
         Offer memory offer = punksOfferedForSale[tokenId];
         require(tokenId < 10000, "Out of tokenId");
         require(offer.isForSale, "Punk is not for sale");
-        require(offer.onlySellTo == address(0) || offer.onlySellTo == _msgSender(), "Unable to sell");
+        require(
+            offer.onlySellTo == address(0) || offer.onlySellTo == _msgSender(),
+            "Unable to sell"
+        );
         require(msg.value >= offer.minValue, "Insufficient amount to pay");
         require(ownerOf(tokenId) == offer.seller, "Not punk seller");
 
@@ -1645,7 +1731,7 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
     function withdraw() public nonReentrant {
         uint256 amount = pendingWithdrawals[_msgSender()];
         pendingWithdrawals[_msgSender()] = 0;
-        (bool success,) = _msgSender().call{value: amount}("");
+        (bool success, ) = _msgSender().call{value: amount}("");
         require(success);
     }
 
@@ -1662,7 +1748,10 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         emit PunkBidEntered(tokenId, msg.value, _msgSender());
     }
 
-    function acceptBidForPunk(uint256 tokenId, uint256 minPrice) public onlyTradablePunk(_msgSender(), tokenId) {
+    function acceptBidForPunk(uint256 tokenId, uint256 minPrice)
+        public
+        onlyTradablePunk(_msgSender(), tokenId)
+    {
         require(punkBids[tokenId].value >= minPrice, "Bid price is low");
         Bid memory bid = punkBids[tokenId];
 
@@ -1681,22 +1770,30 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         uint256 amount = punkBids[tokenId].value;
         punkBids[tokenId] = Bid(false, tokenId, address(0), 0);
         // Refund the bid money
-        (bool success,) = _msgSender().call{value: amount}("");
+        (bool success, ) = _msgSender().call{value: amount}("");
         require(success);
         emit PunkBidWithdrawn(tokenId, punkBids[tokenId].value, _msgSender());
     }
 
     // internal
-    function _fillAssignOrder(uint256 orderA, uint256 orderB) internal returns(uint256) {
+    function _fillAssignOrder(uint256 orderA, uint256 orderB)
+        internal
+        returns (uint256)
+    {
         uint256 temp = orderA;
         if (assignOrders[orderA] > 0) temp = assignOrders[orderA];
         assignOrders[orderA] = orderB;
-        if (assignOrders[orderB] > 0) assignOrders[orderA] = assignOrders[orderB];
+        if (assignOrders[orderB] > 0)
+            assignOrders[orderA] = assignOrders[orderB];
         assignOrders[orderB] = temp;
         return assignOrders[orderA];
     }
 
-    function _transfer(address from, address to, uint256 tokenId) internal override onlyTradablePunk(from, tokenId) {
+    function _transfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal override onlyTradablePunk(from, tokenId) {
         super._transfer(from, to, tokenId);
         emit PunkTransfer(from, to, tokenId);
         if (punksOfferedForSale[tokenId].isForSale) {
@@ -1709,23 +1806,47 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
         }
     }
 
-    function _punkNoLongerForSale(address from, uint256 tokenId) internal onlyTradablePunk(from, tokenId) {
-        punksOfferedForSale[tokenId] = Offer(false, tokenId, from, 0, address(0));
+    function _punkNoLongerForSale(address from, uint256 tokenId)
+        internal
+        onlyTradablePunk(from, tokenId)
+    {
+        punksOfferedForSale[tokenId] = Offer(
+            false,
+            tokenId,
+            from,
+            0,
+            address(0)
+        );
 
         emit PunkNoLongerForSale(tokenId);
     }
 
     // pseudo-random function that's pretty robust because of syscoin's pow chainlocks
-    function _random() internal view returns(uint256) {
-        return uint256(
-            keccak256(
-                abi.encodePacked(block.timestamp + block.difficulty + ((uint256(keccak256(abi.encodePacked(block.coinbase)))) / block.timestamp) + block.gaslimit + ((uint256(keccak256(abi.encodePacked(_msgSender())))) / block.timestamp) + block.number)
-            )
-        ) / punksRemainingToAssign;
+    function _random() internal view returns (uint256) {
+        return
+            uint256(
+                keccak256(
+                    abi.encodePacked(
+                        block.timestamp +
+                            block.difficulty +
+                            ((
+                                uint256(
+                                    keccak256(abi.encodePacked(block.coinbase))
+                                )
+                            ) / block.timestamp) +
+                            block.gaslimit +
+                            ((
+                                uint256(
+                                    keccak256(abi.encodePacked(_msgSender()))
+                                )
+                            ) / block.timestamp) +
+                            block.number
+                    )
+                )
+            ) / punksRemainingToAssign;
     }
 
     receive() external payable {
         mint();
     }
-
 }

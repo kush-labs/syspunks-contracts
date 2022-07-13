@@ -4,11 +4,11 @@ const hre = require("hardhat");
 
 async function main() {
 
-  const initSupply = new BigNumber.from(10**10);
+  const initSupply = new BigNumber.from("100000000000000000000000");
 
   // We get the contract to deploy
   const PunksMarket = await hre.ethers.getContractFactory("ERC20Mock");
-  const punks = await PunksMarket.deploy("Syspunks Test Token", "PUNKSYS", "0x79A0e583C3BB4193BE1EcE116d15E5C4f92e59c2", initSupply);
+  const punks = await PunksMarket.deploy("Syspunks Test Token", "PUNKSYS", "0x...", initSupply);
 
   await punks.deployed();
 

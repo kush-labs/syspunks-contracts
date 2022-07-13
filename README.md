@@ -5,17 +5,11 @@ Be part of the first official NFT collection on Syscoin NEVM as a Syspunk OG.
 ![img](./banner.png)
 
 ## Links
-- IPFS Data - [ipfs:///](https://gateway.pinata.cloud/ipfs/)
-- Contract - [](https://polygonscan.com/address/)
-- [Luxy Collection](https://beta.luxy.io/collection/)
-- [OpenSea Collection](https://opensea.io/collection/)
+- [Contract](https://explorer.syscoin.org/token/0x806AC3D3a9EEbC5c09553b5b406730b6FdBb1B23)
+- [Luxy Collection](https://beta.luxy.io/collection/0x806AC3D3a9EEbC5c09553b5b406730b6FdBb1B23)
 
-## Addresses
-- Mumbai Contract: https://mumbai.polygonscan.com/address/0x5EE9d8d36084Bfd8780d7fAEC540eD1d200a75bb
-- Mumbai Token: https://mumbai.polygonscan.com/token/0x4b3ce4ebCF0f3280227E26d63870D098e5173A58
-
-- NEVM Contract: https://explorer.syscoin.org/address/0x...
-- NEVM Luxy: https://explorer.syscoin.org/address/0x6b7a87899490EcE95443e979cA9485CBE7E71522
+- NEVM Contract: https://explorer.syscoin.org/token/0x806AC3D3a9EEbC5c09553b5b406730b6FdBb1B23
+- NEVM Luxy Token: https://explorer.syscoin.org/address/0x6b7a87899490EcE95443e979cA9485CBE7E71522
 
 ## Running
 These contracts are compiled and deployed using [Hardhat](https://hardhat.org/).

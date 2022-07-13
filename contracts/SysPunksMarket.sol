@@ -311,25 +311,20 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
     function checkMintPrice(address addr) public view returns (uint256) {
         uint256 luxyHeld = luxy.balanceOf(addr);
         if (luxyHeld >= 50000 ether) {
-            // return 50 ether;
-            return 50 ether;
+            return 10 ether;
         } else if (luxyHeld >= 20000 ether) {
-            // return 100 ether;
-            return 100 ether;
+            return 20 ether;
         } else if (luxyHeld >= 5000 ether) {
-            // return 200 ether;
-            return 200 ether;
+            return 30 ether;
         } else if (luxyHeld >= 1000 ether) {
-            // return 300 ether;
-            return 300 ether;
+            return 40 ether;
         } else {
-            // return 350 ether;
-            return 350 ether;
+            return 50 ether;
         }
     }
 
     function mint() public payable {
-        require(block.timestamp > MINT_START_TIME, "Drop hasnt started yet");
+        require(block.timestamp >= MINT_START_TIME, "Drop hasnt started yet");
         require(punksRemainingToAssign > 0, "No punks remaining");
         require(msg.value >= checkMintPrice(msg.sender), "Invalid Amount");
         uint256 randIndex = _random() % punksRemainingToAssign;
@@ -344,10 +339,10 @@ contract SysPunksMarket is ERC721Enumerable, Ownable, ReentrancyGuard {
     }
 
     function mintInBatch(uint256 num) public payable {
-        require(block.timestamp > MINT_START_TIME, "Drop hasnt started yet");
+        require(block.timestamp >= MINT_START_TIME, "Drop hasnt started yet");
         require(num > 0, "Need to mint at least 1");
         require(punksRemainingToAssign >= num, "No punks remaining");
-        require(num <= 8, "Exceeds max batch per mint");
+        require(num <= 10, "Exceeds max batch per mint");
         require(
             msg.value >= (checkMintPrice(msg.sender) * num),
             "Invalid Amount"
